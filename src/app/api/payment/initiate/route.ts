@@ -2,6 +2,8 @@ import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { getSessionUser } from "@/lib/auth";
+import { buildCvAccessFilter, getGuestId, getOrCreateGuestId, setGuestCookie } from "@/lib/guest";
+import { getValidPaymentForCv } from "@/lib/payment-access";
 import { CVModel } from "@/models/CV";
 import { PaymentModel } from "@/models/Payment";
 import { createNotchPayTransaction, detectPaymentMethod } from "@/lib/notchpay";
@@ -11,7 +13,7 @@ import { log, maskReference } from "@/lib/logger";
 
 const RATE_LIMIT_MAP = new Map<string, { count: number; resetAt: number }>();
 
-function checkRateLimit(key: string, maxAttempts: number = 3, windowMs: number = 5 * 60 * 1000): boolean {
+function checkRateLimit(key: string, maxAttempts: number = 5, windowMs: number = 5 * 60 * 1000): boolean {
   const now = Date.now();
   const record = RATE_LIMIT_MAP.get(key);
 
@@ -31,68 +33,66 @@ function checkRateLimit(key: string, maxAttempts: number = 3, windowMs: number =
 export async function POST(req: NextRequest) {
   await connectToDatabase();
   const session = getSessionUser(req);
-  if (!session) {
-    return NextResponse.json(
-      { message: "Authentification requise." },
-      { status: 401 }
-    );
-  }
-
-  const { userId, email } = session;
+  const guestId = session ? getGuestId(req) || getOrCreateGuestId(req) : getOrCreateGuestId(req);
   const body = await req.json();
 
-  // Validate input
   const validation = paymentInitiateSchema.safeParse(body);
   if (!validation.success) {
     return NextResponse.json(
       { message: "Données invalides", errors: validation.error.flatten() },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   const { cvId, paymentPhone } = validation.data;
-  const customer = validation.data.customer || email;
+  const customer = validation.data.customer || session?.email || "";
 
-  // Rate limiting
-  const rateLimitKey = `payment:${userId}`;
+  if (!customer) {
+    return NextResponse.json(
+      { message: "Indiquez votre email dans le formulaire CV." },
+      { status: 400 },
+    );
+  }
+
+  const rateLimitKey = session ? `payment:user:${session.userId}` : `payment:guest:${guestId}`;
   if (!checkRateLimit(rateLimitKey)) {
     return NextResponse.json(
       { message: "Trop de tentatives. Réessayez dans 5 minutes." },
-      { status: 429 }
+      { status: 429 },
     );
   }
 
   try {
-    // Verify CV exists and belongs to user
-    const cv = await CVModel.findOne({ _id: cvId, userId, deletedAt: null });
+    const filter = buildCvAccessFilter(cvId, session, guestId);
+    if (!filter) {
+      return NextResponse.json(
+        { message: "CV introuvable ou accès refusé." },
+        { status: 404 },
+      );
+    }
+
+    const cv = await CVModel.findOne(filter);
     if (!cv) {
       return NextResponse.json(
         { message: "CV introuvable ou accès refusé." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
-    // Check if already paid
-    const existingPayment = await PaymentModel.findOne({
-      cvId,
-      status: "completed",
-      deletedAt: null,
-    });
-
-    if (existingPayment && existingPayment.expiresAt && new Date() < new Date(existingPayment.expiresAt)) {
+    const existingPayment = await getValidPaymentForCv(cvId);
+    if (existingPayment) {
       return NextResponse.json(
-        { message: "Ce CV a déjà un paiement valide." },
-        { status: 409 }
+        { message: "Ce CV a déjà un paiement valide.", data: { reference: existingPayment.reference } },
+        { status: 409 },
       );
     }
 
-    // Detect payment method
     const paymentMethod = detectPaymentMethod(paymentPhone);
-
-    // Create payment record
     const reference = `cvf-${randomUUID()}`;
+
     const payment = await PaymentModel.create({
-      userId,
+      userId: session?.userId ?? null,
+      guestId: session ? guestId : guestId,
       cvId,
       amount: 500,
       status: "pending",
@@ -107,7 +107,6 @@ export async function POST(req: NextRequest) {
     });
 
     try {
-      // Initiate NotchPay transaction
       const transaction = await createNotchPayTransaction({
         amount: 500,
         reference,
@@ -116,7 +115,6 @@ export async function POST(req: NextRequest) {
         description: "Paiement CVFacile - téléchargement PDF",
       });
 
-      // Save NotchPay transaction ID
       const notchpayRef: string =
         transaction?.transaction?.reference ||
         transaction?.reference ||
@@ -132,13 +130,13 @@ export async function POST(req: NextRequest) {
 
       auditEvent({
         action: "payment.initiate",
-        userId,
+        userId: session?.userId || `guest:${guestId.slice(0, 8)}`,
         resource: `cv:${cvId}`,
         status: "success",
         meta: { reference: maskReference(reference) },
       });
 
-      return NextResponse.json({
+      const response = NextResponse.json({
         data: {
           paymentId: payment._id,
           reference,
@@ -147,11 +145,16 @@ export async function POST(req: NextRequest) {
           ussdMessage: transaction.message,
         },
       });
+
+      if (!session) {
+        setGuestCookie(response, guestId);
+      }
+
+      return response;
     } catch (notchpayError) {
       const errorMessage =
         notchpayError instanceof Error ? notchpayError.message : "Erreur NotchPay";
 
-      // Update payment with error
       await PaymentModel.findByIdAndUpdate(payment._id, {
         $set: {
           status: "failed",
@@ -165,25 +168,19 @@ export async function POST(req: NextRequest) {
 
       auditEvent({
         action: "payment.initiate_failed",
-        userId,
+        userId: session?.userId || `guest:${guestId.slice(0, 8)}`,
         resource: `cv:${cvId}`,
         status: "failure",
         meta: { reason: errorMessage },
       });
       log("error", "NotchPay initiate failed", { reason: errorMessage });
-      return NextResponse.json(
-        { message: errorMessage },
-        { status: 502 }
-      );
+      return NextResponse.json({ message: errorMessage }, { status: 502 });
     }
   } catch (error) {
     log("error", "Payment initiate error", {
       error: error instanceof Error ? error.message : String(error),
     });
     const message = error instanceof Error ? error.message : "Erreur serveur";
-    return NextResponse.json(
-      { message },
-      { status: 500 }
-    );
+    return NextResponse.json({ message }, { status: 500 });
   }
 }

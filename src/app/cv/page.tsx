@@ -18,7 +18,7 @@ export default async function CVPage({ searchParams }: CVPageProps) {
   const template = params.template;
   const cvId = params.cvId || "";
   const initialStep = params.step ? Number(params.step) : 0;
-  const openExportOnLoad = params.export === "1" || params.pay === "1";
+  const openPaymentOnLoad = params.pay === "1" || params.export === "1";
 
   return (
     <main className="min-h-screen bg-gray-ui">
@@ -41,7 +41,7 @@ export default async function CVPage({ searchParams }: CVPageProps) {
         initialTemplate={template}
         existingCvId={cvId}
         initialStep={Number.isFinite(initialStep) ? initialStep : 0}
-        openExportOnLoad={openExportOnLoad}
+        openPaymentOnLoad={openPaymentOnLoad}
       />
     </main>
   );

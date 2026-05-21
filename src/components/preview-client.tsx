@@ -32,6 +32,7 @@ export function PreviewClient({ cvId }: { cvId: string }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth/me", { credentials: "include" })
@@ -68,6 +69,13 @@ export function PreviewClient({ cvId }: { cvId: string }) {
       if (payload?.data) {
         setCv(payload.data);
         setResolvedCvId(id);
+        const payRes = await fetch(`/api/cv/${id}/payment-status`, {
+          credentials: "include",
+        });
+        if (payRes.ok) {
+          const payPayload = await payRes.json();
+          setIsPaid(!!payPayload?.data?.isPaid);
+        }
       } else {
         setError("Aucun CV trouvé");
       }
@@ -208,18 +216,28 @@ export function PreviewClient({ cvId }: { cvId: string }) {
                   Modifier
                 </Link>
 
-                <button
-                  onClick={handleDownloadPDF}
-                  disabled={isGeneratingPDF}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-60"
-                >
-                  {isGeneratingPDF ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Download className="w-4 h-4" />
-                  )}
-                  Télécharger PDF
-                </button>
+                {isPaid ? (
+                  <button
+                    onClick={handleDownloadPDF}
+                    disabled={isGeneratingPDF}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-60"
+                  >
+                    {isGeneratingPDF ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Download className="w-4 h-4" />
+                    )}
+                    Télécharger PDF
+                  </button>
+                ) : (
+                  <Link
+                    href={`/cv?cvId=${resolvedCvId || cvId}&step=6&pay=1`}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-medium hover:shadow-lg transition-all duration-200"
+                  >
+                    <AlertCircle className="w-4 h-4" />
+                    Payer 500 FCFA
+                  </Link>
+                )}
 
                 <button
                   onClick={toggleFullscreen}

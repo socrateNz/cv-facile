@@ -2,7 +2,8 @@ import { Schema, model, models } from "mongoose";
 
 const PaymentSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", default: null, index: true },
+    guestId: { type: String, default: null, index: true },
     cvId: { type: Schema.Types.ObjectId, ref: "CV", required: true, index: true },
     amount: { type: Number, default: 500 },
     status: {

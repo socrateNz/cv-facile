@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
+import { CVModel } from "@/models/CV";
 import { getSessionUser } from "@/lib/auth";
+import { getGuestId } from "@/lib/guest";
+import { userCanAccessCv } from "@/lib/payment-access";
 import { fetchNotchPayPayment } from "@/lib/notchpay";
 import { PaymentModel } from "@/models/Payment";
 
@@ -12,18 +15,23 @@ export async function GET(
 ) {
   await connectToDatabase();
   const session = getSessionUser(req);
-  if (!session) {
-    return NextResponse.json({ message: "Authentification requise." }, { status: 401 });
-  }
-
+  const guestId = getGuestId(req);
   const { reference } = await params;
-  const payment = await PaymentModel.findOne({ reference });
 
+  const payment = await PaymentModel.findOne({ reference });
   if (!payment) {
     return NextResponse.json({ message: "Paiement introuvable." }, { status: 404 });
   }
 
-  // Synchroniser avec NotchPay tant que le paiement n'est pas terminé
+  const canAccess = await userCanAccessCv(
+    String(payment.cvId),
+    session,
+    guestId,
+  );
+  if (!canAccess) {
+    return NextResponse.json({ message: "Accès refusé." }, { status: 403 });
+  }
+
   if (!TERMINAL_STATUSES.has(payment.status)) {
     const notchPayRef = payment.transactionId || payment.reference;
     try {
@@ -35,6 +43,7 @@ export async function GET(
           const expiresAt = new Date();
           expiresAt.setDate(expiresAt.getDate() + 30);
           payment.expiresAt = expiresAt;
+          await CVModel.findByIdAndUpdate(payment.cvId, { status: "published" });
         }
         await payment.save();
       }

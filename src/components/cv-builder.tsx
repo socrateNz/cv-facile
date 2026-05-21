@@ -27,7 +27,9 @@ import {
   FileText,
   Layout,
   Download,
+  CreditCard,
 } from "lucide-react";
+import { PaymentModal } from "@/components/payment-modal";
 import { SaveAccountCta } from "@/components/save-account-cta";
 import { LOCAL_CV_KEY } from "@/lib/guest-constants";
 import { normalizeTemplate } from "@/lib/utils";
@@ -46,7 +48,7 @@ const steps = [
   { id: "competences", label: "Compétences", icon: Code2 },
   { id: "education", label: "Éducation", icon: GraduationCap },
   { id: "template", label: "Modèle", icon: Layout },
-  { id: "export", label: "Télécharger", icon: Download },
+  { id: "payment", label: "Paiement", icon: CreditCard },
 ];
 
 const jsonHeaders = { "Content-Type": "application/json" };
@@ -56,14 +58,14 @@ type Props = {
   initialTemplate?: CVDocument["template"];
   existingCvId?: string;
   initialStep?: number;
-  openExportOnLoad?: boolean;
+  openPaymentOnLoad?: boolean;
 };
 
 export function CVBuilder({
   initialTemplate = "modern",
   existingCvId = "",
   initialStep = 0,
-  openExportOnLoad = false,
+  openPaymentOnLoad = false,
 }: Props) {
   const [cv, setCv] = useState<CVDocument>({
     ...defaultCV,
@@ -76,6 +78,8 @@ export function CVBuilder({
   const [isSaving, setIsSaving] = useState(false);
   const [skillInput, setSkillInput] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [paymentDone, setPaymentDone] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [dialogMessage, setDialogMessage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -105,15 +109,30 @@ export function CVBuilder({
             setIsReady(true);
           }
         }
+      })
+      .then(() => {
+        if (existingCvId) checkPaymentStatus(existingCvId);
       });
   }, [existingCvId]);
 
+  async function checkPaymentStatus(id: string) {
+    const res = await fetch(`/api/cv/${id}/payment-status`, fetchOpts);
+    if (!res.ok) return;
+    const payload = await res.json();
+    if (payload?.data?.isPaid) setPaymentDone(true);
+  }
+
   useEffect(() => {
-    if (openExportOnLoad && cvId) {
+    if (cvId) checkPaymentStatus(cvId);
+  }, [cvId]);
+
+  useEffect(() => {
+    if (openPaymentOnLoad && cvId) {
       setCurrentStep(steps.length - 1);
       setIsReady(true);
+      if (!paymentDone) setShowPaymentModal(true);
     }
-  }, [openExportOnLoad, cvId]);
+  }, [openPaymentOnLoad, cvId, paymentDone]);
 
   useEffect(() => {
     if (existingCvId) return;
@@ -191,6 +210,8 @@ export function CVBuilder({
       localStorage.setItem(LOCAL_CV_KEY, id);
       setIsReady(true);
       setCurrentStep(steps.length - 1);
+      if (!paymentDone) setShowPaymentModal(true);
+      else checkPaymentStatus(id);
       return id;
     }
 
@@ -808,37 +829,64 @@ export function CVBuilder({
 
                 {currentStep === 6 && (
                   <div className="space-y-6">
-                    <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 p-6 text-center space-y-4">
-                      <Download className="w-12 h-12 text-green-600 mx-auto" />
-                      <p className="font-semibold text-gray-900">
-                        Votre CV est prêt
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Téléchargez votre PDF au format A4, identique à
-                        l&apos;aperçu.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={downloadPdf}
-                        disabled={isDownloading || isSaving}
-                        className="w-full rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-3 text-white font-semibold disabled:opacity-60 flex items-center justify-center gap-2"
-                      >
-                        {isDownloading || isSaving ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Download className="w-4 h-4" />
-                        )}
-                        Télécharger le PDF
-                      </button>
-                      {cvId && (
-                        <Link
-                          href={`/preview?cvId=${cvId}`}
-                          className="text-sm text-blue-600 hover:underline"
+                    {paymentDone ? (
+                      <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 p-6 text-center space-y-4">
+                        <Check className="w-10 h-10 text-green-600 mx-auto" />
+                        <p className="font-bold text-green-800">Paiement confirmé</p>
+                        <p className="text-sm text-gray-600">
+                          Téléchargez votre CV en PDF (format A4).
+                        </p>
+                        <button
+                          type="button"
+                          onClick={downloadPdf}
+                          disabled={isDownloading}
+                          className="w-full rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-3 text-white font-semibold disabled:opacity-60 flex items-center justify-center gap-2"
                         >
-                          Ouvrir l&apos;aperçu plein écran
-                        </Link>
-                      )}
-                    </div>
+                          {isDownloading ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Download className="w-4 h-4" />
+                          )}
+                          Télécharger le PDF
+                        </button>
+                        {cvId && (
+                          <Link
+                            href={`/preview?cvId=${cvId}`}
+                            className="text-sm text-blue-600 hover:underline block"
+                          >
+                            Aperçu plein écran
+                          </Link>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 p-6 text-center space-y-4">
+                        <CreditCard className="w-12 h-12 text-blue-600 mx-auto" />
+                        <p className="font-semibold text-gray-900">
+                          Paiement Mobile Money — 500 FCFA
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          MTN ou Orange Money. Le PDF sera disponible après
+                          confirmation sur votre téléphone.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            await saveCV();
+                            if (!cvId) {
+                              const id = await finalizeCV();
+                              if (!id) return;
+                            } else if (!isReady) {
+                              await finalizeCV();
+                            }
+                            setShowPaymentModal(true);
+                          }}
+                          disabled={isSaving}
+                          className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 text-white font-semibold disabled:opacity-60"
+                        >
+                          {isSaving ? "Enregistrement…" : "Payer maintenant"}
+                        </button>
+                      </div>
+                    )}
                     {!isLoggedIn && (
                       <SaveAccountCta
                         cvId={cvId}
@@ -885,11 +933,11 @@ export function CVBuilder({
                       </>
                     )}
                   </button>
-                ) : (
+                ) : paymentDone ? (
                   <button
                     className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-2 text-white font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-50"
                     onClick={downloadPdf}
-                    disabled={isDownloading || isSaving}
+                    disabled={isDownloading}
                     type="button"
                   >
                     {isDownloading ? (
@@ -898,6 +946,19 @@ export function CVBuilder({
                       <Download className="w-4 h-4" />
                     )}
                     Télécharger
+                  </button>
+                ) : (
+                  <button
+                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2 text-white font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+                    onClick={async () => {
+                      if (!cvId) await finalizeCV();
+                      else setShowPaymentModal(true);
+                    }}
+                    disabled={isSaving}
+                    type="button"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    Payer
                   </button>
                 )}
               </div>
@@ -917,6 +978,18 @@ export function CVBuilder({
           </div>
         </div>
       </div>
+
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        cvId={cvId}
+        customerEmail={cv.email}
+        defaultPhone={cv.phone || ""}
+        onSuccess={() => {
+          setPaymentDone(true);
+          setShowPaymentModal(false);
+        }}
+      />
 
       <Dialog
         isOpen={!!dialogMessage}

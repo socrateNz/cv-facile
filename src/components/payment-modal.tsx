@@ -18,6 +18,7 @@ type PaymentModalProps = {
   onClose: () => void;
   cvId: string;
   customerEmail: string;
+  defaultPhone?: string;
   onSuccess?: () => void;
 };
 
@@ -28,14 +29,17 @@ const carrierLabels = {
   orange: { name: "Orange Money", color: "bg-orange-100 text-orange-800 border-orange-200" },
 } as const;
 
+const fetchOpts = { credentials: "include" as const };
+
 export function PaymentModal({
   isOpen,
   onClose,
   cvId,
   customerEmail,
+  defaultPhone = "",
   onSuccess,
 }: PaymentModalProps) {
-  const [paymentPhone, setPaymentPhone] = useState("");
+  const [paymentPhone, setPaymentPhone] = useState(defaultPhone);
   const [phase, setPhase] = useState<Phase>("form");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,12 +54,14 @@ export function PaymentModal({
   useEffect(() => {
     if (!isOpen) {
       setPhase("form");
-      setPaymentPhone("");
+      setPaymentPhone(defaultPhone);
       setError(null);
       setUssdMessage(null);
       if (pollRef.current) clearInterval(pollRef.current);
+    } else {
+      setPaymentPhone((prev) => prev || defaultPhone);
     }
-  }, [isOpen]);
+  }, [isOpen, defaultPhone]);
 
   useEffect(() => {
     return () => {
@@ -71,7 +77,7 @@ export function PaymentModal({
   }
 
   async function checkPaymentStatus(reference: string) {
-    const res = await fetch(`/api/payment/status/${reference}`);
+        const res = await fetch(`/api/payment/status/${reference}`, fetchOpts);
     if (!res.ok) return;
 
     const data = await res.json();
@@ -108,6 +114,7 @@ export function PaymentModal({
 
     const response = await fetch("/api/payment/initiate", {
       method: "POST",
+      ...fetchOpts,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         cvId,

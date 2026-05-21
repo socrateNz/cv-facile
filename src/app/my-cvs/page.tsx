@@ -199,7 +199,7 @@ export default function MyCvsPage() {
                         </Link>
                         {!cv.isPaid && !cv.isExpired && (
                           <Link
-                            href={`/cv?cvId=${cv._id}&step=6&export=1`}
+                            href={`/cv?cvId=${cv._id}&step=6&pay=1`}
                             className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500 px-3 py-1.5 text-sm text-white font-medium"
                           >
                             <CreditCard className="w-3.5 h-3.5" />

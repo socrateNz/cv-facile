@@ -39,15 +39,15 @@ export default function Home() {
     },
     {
       icon: CreditCard,
-      title: "Sans compte obligatoire",
-      description: "Créez, prévisualisez et téléchargez librement",
+      title: "Mobile Money 500 FCFA",
+      description: "MTN ou Orange Money — sans compte obligatoire",
       bg: "bg-emerald-50",
       iconColor: "text-emerald-600",
     },
     {
       icon: FileCheck,
       title: "PDF professionnel",
-      description: "Export A4 identique à l'aperçu, en un clic",
+      description: "Export PDF après paiement, identique à l'aperçu",
       bg: "bg-orange-50",
       iconColor: "text-orange-600",
     },
@@ -71,7 +71,7 @@ export default function Home() {
     { step: "01", title: "Remplissez", desc: "Vos informations professionnelles" },
     { step: "02", title: "Choisissez", desc: "Votre template préféré" },
     { step: "03", title: "Prévisualisez", desc: "Vérifiez le rendu en direct" },
-    { step: "04", title: "Téléchargez", desc: "Export PDF gratuit, sans compte" },
+    { step: "04", title: "Payez & téléchargez", desc: "500 FCFA — PDF professionnel" },
   ];
 
   const avatarInitials = ["AB", "CK", "DM", "EF"];

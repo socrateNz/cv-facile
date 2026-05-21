@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { SessionUser } from "@/lib/auth";
 import { GUEST_COOKIE } from "@/lib/guest-constants";
 import { CVModel } from "@/models/CV";
+import { PaymentModel } from "@/models/Payment";
 
 export { GUEST_COOKIE, LOCAL_CV_KEY } from "@/lib/guest-constants";
 
@@ -57,10 +58,15 @@ export async function claimGuestCvs(
 ): Promise<number> {
   if (!guestId) return 0;
 
-  const result = await CVModel.updateMany(
+  const cvResult = await CVModel.updateMany(
     { guestId, deletedAt: null, $or: [{ userId: null }, { userId: { $exists: false } }] },
     { $set: { userId }, $unset: { guestId: "" } },
   );
 
-  return result.modifiedCount;
+  await PaymentModel.updateMany(
+    { guestId },
+    { $set: { userId }, $unset: { guestId: "" } },
+  );
+
+  return cvResult.modifiedCount;
 }

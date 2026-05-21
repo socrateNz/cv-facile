@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { CVModel } from "@/models/CV";
 import { getSessionUser } from "@/lib/auth";
 import { buildCvAccessFilter, getGuestId } from "@/lib/guest";
+import { getValidPaymentForCv } from "@/lib/payment-access";
 import { generateCvPdfBuffer } from "@/lib/pdf";
 import type { CVDocument } from "@/types/cv";
 import { normalizeTemplate } from "@/lib/utils";
@@ -44,6 +45,16 @@ export async function GET(
   const cv = await CVModel.findOne(filter).lean<PdfCV | null>();
   if (!cv) {
     return NextResponse.json({ message: "CV introuvable." }, { status: 404 });
+  }
+
+  if (session?.role !== "admin") {
+    const payment = await getValidPaymentForCv(id);
+    if (!payment) {
+      return NextResponse.json(
+        { message: "Paiement requis avant téléchargement (500 FCFA)." },
+        { status: 402 },
+      );
+    }
   }
 
   const authToken = req.cookies.get("cvfacile_token")?.value || "";
