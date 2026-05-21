@@ -20,7 +20,7 @@ function CVPrintContent() {
       return;
     }
 
-    fetch(`/api/cv/${cvId}`)
+    fetch(`/api/cv/${cvId}`, { credentials: "include" })
       .then((res) => (res.ok ? res.json() : null))
       .then((payload) => {
         setCv(payload?.data || defaultCV);

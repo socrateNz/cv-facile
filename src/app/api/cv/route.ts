@@ -4,6 +4,11 @@ import { CVModel } from "@/models/CV";
 import { PaymentModel } from "@/models/Payment";
 import { cvPayloadSchema } from "@/lib/validators";
 import { getSessionUser } from "@/lib/auth";
+import {
+  getGuestId,
+  getOrCreateGuestId,
+  setGuestCookie,
+} from "@/lib/guest";
 import { auditEvent } from "@/lib/audit";
 
 export async function GET(req: NextRequest) {
@@ -11,8 +16,8 @@ export async function GET(req: NextRequest) {
   const session = getSessionUser(req);
   if (!session) {
     return NextResponse.json(
-      { message: "Authentification requise." },
-      { status: 401 }
+      { message: "Connectez-vous pour voir vos CV sauvegardés." },
+      { status: 401 },
     );
   }
 
@@ -21,7 +26,6 @@ export async function GET(req: NextRequest) {
     .sort({ updatedAt: -1 })
     .lean();
 
-  // Get payment info for each CV
   const cvIds = cvs.map((cv) => cv._id);
   const payments = await PaymentModel.find({
     cvId: { $in: cvIds },
@@ -31,7 +35,7 @@ export async function GET(req: NextRequest) {
     .sort({ completedAt: -1 })
     .lean();
 
-  const paymentByCv: Record<string, any> = {};
+  const paymentByCv: Record<string, (typeof payments)[0]> = {};
   payments.forEach((p) => {
     const cid = String(p.cvId);
     if (!paymentByCv[cid]) {
@@ -63,35 +67,37 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   await connectToDatabase();
   const session = getSessionUser(req);
-  if (!session) {
-    return NextResponse.json(
-      { message: "Authentification requise." },
-      { status: 401 }
-    );
-  }
-
-  const { userId } = session;
   const body = await req.json();
 
   const validation = cvPayloadSchema.safeParse(body);
   if (!validation.success) {
     return NextResponse.json(
       { message: "Données invalides", errors: validation.error.flatten() },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
+  const guestId = session ? getGuestId(req) || getOrCreateGuestId(req) : getOrCreateGuestId(req);
+
   const cv = await CVModel.create({
-    userId,
+    userId: session?.userId ?? null,
+    guestId: session ? guestId : guestId,
     ...validation.data,
   });
 
+  const response = NextResponse.json({ data: cv }, { status: 201 });
+
+  if (!session) {
+    setGuestCookie(response, guestId);
+  }
+
   auditEvent({
     action: "cv.create",
-    userId,
+    userId: session?.userId || `guest:${guestId.slice(0, 8)}`,
     resource: `cv:${cv._id}`,
     status: "success",
+    meta: { anonymous: !session },
   });
 
-  return NextResponse.json({ data: cv }, { status: 201 });
+  return response;
 }

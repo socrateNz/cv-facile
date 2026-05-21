@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { defaultCV } from "@/lib/defaults";
 import { CVDocument } from "@/types/cv";
 import { ScaledCVPreview } from "@/components/scaled-cv-preview";
@@ -22,12 +23,13 @@ import {
   Plus,
   Trash2,
   Sparkles,
-  CreditCard,
   Loader2,
   FileText,
   Layout,
+  Download,
 } from "lucide-react";
-import { PaymentModal } from "@/components/payment-modal";
+import { SaveAccountCta } from "@/components/save-account-cta";
+import { LOCAL_CV_KEY } from "@/lib/guest-constants";
 import { normalizeTemplate } from "@/lib/utils";
 import { TEMPLATE_IDS, templates } from "@/data/data";
 
@@ -44,21 +46,24 @@ const steps = [
   { id: "competences", label: "Compétences", icon: Code2 },
   { id: "education", label: "Éducation", icon: GraduationCap },
   { id: "template", label: "Modèle", icon: Layout },
-  { id: "payment", label: "Paiement", icon: CreditCard },
+  { id: "export", label: "Télécharger", icon: Download },
 ];
+
+const jsonHeaders = { "Content-Type": "application/json" };
+const fetchOpts = { credentials: "include" as const };
 
 type Props = {
   initialTemplate?: CVDocument["template"];
   existingCvId?: string;
   initialStep?: number;
-  openPaymentOnLoad?: boolean;
+  openExportOnLoad?: boolean;
 };
 
 export function CVBuilder({
   initialTemplate = "modern",
   existingCvId = "",
   initialStep = 0,
-  openPaymentOnLoad = false,
+  openExportOnLoad = false,
 }: Props) {
   const [cv, setCv] = useState<CVDocument>({
     ...defaultCV,
@@ -70,8 +75,8 @@ export function CVBuilder({
   const [cvId, setCvId] = useState(existingCvId);
   const [isSaving, setIsSaving] = useState(false);
   const [skillInput, setSkillInput] = useState("");
-  const [paymentDone, setPaymentDone] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [dialogMessage, setDialogMessage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -91,7 +96,7 @@ export function CVBuilder({
 
   useEffect(() => {
     if (!existingCvId) return;
-    fetch(`/api/cv/${existingCvId}`)
+    fetch(`/api/cv/${existingCvId}`, fetchOpts)
       .then((response) => (response.ok ? response.json() : null))
       .then((payload) => {
         if (payload?.data) {
@@ -104,17 +109,19 @@ export function CVBuilder({
   }, [existingCvId]);
 
   useEffect(() => {
-    if (openPaymentOnLoad && cvId) {
+    if (openExportOnLoad && cvId) {
       setCurrentStep(steps.length - 1);
+      setIsReady(true);
     }
-  }, [openPaymentOnLoad, cvId]);
+  }, [openExportOnLoad, cvId]);
 
   useEffect(() => {
     if (existingCvId) return;
-    fetch("/api/auth/me")
+    fetch("/api/auth/me", fetchOpts)
       .then((response) => (response.ok ? response.json() : null))
       .then((payload) => {
         if (!payload?.data) return;
+        setIsLoggedIn(true);
         setCv((prev) => ({
           ...prev,
           fullName: prev.fullName || payload.data.fullName || "",
@@ -122,6 +129,20 @@ export function CVBuilder({
         }));
       });
   }, [existingCvId]);
+
+  useEffect(() => {
+    if (existingCvId || cvId) return;
+    const stored = typeof window !== "undefined" ? localStorage.getItem(LOCAL_CV_KEY) : null;
+    if (!stored) return;
+    fetch(`/api/cv/${stored}`, fetchOpts)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        if (payload?.data) {
+          setCv(payload.data);
+          setCvId(stored);
+        }
+      });
+  }, [existingCvId, cvId]);
 
   async function saveCV() {
     setIsSaving(true);
@@ -133,15 +154,20 @@ export function CVBuilder({
     };
     const response = await fetch(url, {
       method,
-      headers: { "Content-Type": "application/json" },
+      ...fetchOpts,
+      headers: jsonHeaders,
       body: JSON.stringify(payloadToSave),
     });
     const payload = await response.json();
-    if (!cvId) setCvId(payload.data._id);
+    if (payload?.data?._id) {
+      setCvId(payload.data._id);
+      localStorage.setItem(LOCAL_CV_KEY, payload.data._id);
+    }
     setIsSaving(false);
+    return response.ok;
   }
 
-  async function finalizeCV() {
+  async function finalizeCV(): Promise<string | null> {
     setIsSaving(true);
     const url = cvId ? `/api/cv/${cvId}` : "/api/cv";
     const method = cvId ? "PUT" : "POST";
@@ -152,18 +178,40 @@ export function CVBuilder({
     };
     const response = await fetch(url, {
       method,
-      headers: { "Content-Type": "application/json" },
+      ...fetchOpts,
+      headers: jsonHeaders,
       body: JSON.stringify(payloadToSave),
     });
     const payload = await response.json();
-    if (!cvId) setCvId(payload.data._id);
     setIsSaving(false);
 
-    if (response.ok) {
+    if (response.ok && payload?.data?._id) {
+      const id = String(payload.data._id);
+      setCvId(id);
+      localStorage.setItem(LOCAL_CV_KEY, id);
       setIsReady(true);
-      setShowPaymentModal(true);
-    } else {
-      setDialogMessage("Erreur lors de la finalisation du CV.");
+      setCurrentStep(steps.length - 1);
+      return id;
+    }
+
+    setDialogMessage(payload?.message || "Erreur lors de la finalisation du CV.");
+    return null;
+  }
+
+  async function downloadPdf() {
+    let id = cvId;
+    if (!id) {
+      id = (await finalizeCV()) || "";
+    }
+    if (!id) {
+      setDialogMessage("Enregistrez le CV avant de télécharger.");
+      return;
+    }
+    setIsDownloading(true);
+    try {
+      window.open(`/api/cv/${id}/pdf`, "_blank");
+    } finally {
+      setIsDownloading(false);
     }
   }
 
@@ -171,7 +219,7 @@ export function CVBuilder({
     setIsUploading(true);
     const form = new FormData();
     form.set("image", file);
-    const response = await fetch("/api/upload", { method: "POST", body: form });
+    const response = await fetch("/api/upload", { method: "POST", body: form, ...fetchOpts });
 
     if (!response.ok) {
       let message = "Upload photo impossible.";
@@ -760,41 +808,44 @@ export function CVBuilder({
 
                 {currentStep === 6 && (
                   <div className="space-y-6">
-                    {paymentDone ? (
-                      <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 p-6 text-center space-y-3">
-                        <Check className="w-10 h-10 text-green-600 mx-auto" />
-                        <p className="font-bold text-green-800">Paiement confirmé</p>
-                        {cvId && (
-                          <a
-                            href={`/api/cv/${cvId}/pdf`}
-                            className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-white text-sm font-semibold"
-                          >
-                            Télécharger le PDF
-                          </a>
+                    <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 p-6 text-center space-y-4">
+                      <Download className="w-12 h-12 text-green-600 mx-auto" />
+                      <p className="font-semibold text-gray-900">
+                        Votre CV est prêt
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Téléchargez votre PDF au format A4, identique à
+                        l&apos;aperçu.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={downloadPdf}
+                        disabled={isDownloading || isSaving}
+                        className="w-full rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-3 text-white font-semibold disabled:opacity-60 flex items-center justify-center gap-2"
+                      >
+                        {isDownloading || isSaving ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Download className="w-4 h-4" />
                         )}
-                      </div>
-                    ) : (
-                      <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 p-6 text-center space-y-4">
-                        <CreditCard className="w-12 h-12 text-blue-600 mx-auto" />
-                        <p className="font-semibold text-gray-900">
-                          Paiement Mobile Money — 500 FCFA
-                        </p>
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            await saveCV();
-                            if (!cvId) {
-                              setDialogMessage("Enregistrez le CV avant de payer.");
-                              return;
-                            }
-                            if (!isReady) await finalizeCV();
-                            else setShowPaymentModal(true);
-                          }}
-                          className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 text-white font-semibold"
+                        Télécharger le PDF
+                      </button>
+                      {cvId && (
+                        <Link
+                          href={`/preview?cvId=${cvId}`}
+                          className="text-sm text-blue-600 hover:underline"
                         >
-                          {isReady ? "Payer maintenant" : "Finaliser et payer"}
-                        </button>
-                      </div>
+                          Ouvrir l&apos;aperçu plein écran
+                        </Link>
+                      )}
+                    </div>
+                    {!isLoggedIn && (
+                      <SaveAccountCta
+                        cvId={cvId}
+                        defaultEmail={cv.email}
+                        defaultFullName={cv.fullName}
+                        onAuthSuccess={() => setIsLoggedIn(true)}
+                      />
                     )}
                   </div>
                 )}
@@ -815,28 +866,38 @@ export function CVBuilder({
                 {currentStep < steps.length - 1 ? (
                   <button
                     className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2 text-white font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-50"
-                    disabled={!canGoNext}
-                    onClick={() =>
-                      setCurrentStep((s) => Math.min(steps.length - 1, s + 1))
-                    }
-                    type="button"
-                  >
-                    Suivant
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                ) : (
-                  <button
-                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-2 text-white font-medium hover:shadow-lg transition-all duration-200"
-                    onClick={finalizeCV}
-                    disabled={isSaving}
+                    disabled={!canGoNext || isSaving}
+                    onClick={async () => {
+                      if (currentStep === 5) {
+                        await finalizeCV();
+                        return;
+                      }
+                      setCurrentStep((s) => Math.min(steps.length - 1, s + 1));
+                    }}
                     type="button"
                   >
                     {isSaving ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
-                      <Check className="w-4 h-4" />
+                      <>
+                        Suivant
+                        <ChevronRight className="w-4 h-4" />
+                      </>
                     )}
-                    Finaliser
+                  </button>
+                ) : (
+                  <button
+                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-2 text-white font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+                    onClick={downloadPdf}
+                    disabled={isDownloading || isSaving}
+                    type="button"
+                  >
+                    {isDownloading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Download className="w-4 h-4" />
+                    )}
+                    Télécharger
                   </button>
                 )}
               </div>
@@ -856,17 +917,6 @@ export function CVBuilder({
           </div>
         </div>
       </div>
-
-      <PaymentModal
-        isOpen={showPaymentModal}
-        onClose={() => setShowPaymentModal(false)}
-        cvId={cvId}
-        customerEmail={cv.email}
-        onSuccess={() => {
-          setPaymentDone(true);
-          setShowPaymentModal(false);
-        }}
-      />
 
       <Dialog
         isOpen={!!dialogMessage}

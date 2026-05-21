@@ -26,7 +26,8 @@ export type CVStatus = "draft" | "ready" | "published";
 
 export type CVDocument = {
   _id?: string;
-  userId: string;
+  userId?: string;
+  guestId?: string;
   fullName: string;
   email: string;
   phone?: string;

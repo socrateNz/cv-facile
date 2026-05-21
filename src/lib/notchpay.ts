@@ -147,8 +147,6 @@ export async function createNotchPayTransaction(params: {
     initData?.data?.reference ||
     "";
 
-  console.log(`[NotchPay] URL complete: ${NOTCHPAY_BASE_URL}/payments/${trxRef}`);
-
   if (!trxRef) {
     console.warn("[NotchPay] Aucune référence trx dans la réponse initiale.");
     return initData;

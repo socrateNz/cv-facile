@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { SaveAccountCta } from "@/components/save-account-cta";
+import { LOCAL_CV_KEY } from "@/lib/guest-constants";
 import { CVPreview } from "@/components/cv-preview";
 import { defaultCV } from "@/lib/defaults";
 import {
@@ -24,10 +26,17 @@ import {
 export function PreviewClient({ cvId }: { cvId: string }) {
   const router = useRouter();
   const [cv, setCv] = useState(defaultCV);
+  const [resolvedCvId, setResolvedCvId] = useState(cvId);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me", { credentials: "include" })
+      .then((r) => setIsLoggedIn(r.ok));
+  }, []);
 
   useEffect(() => {
     loadCV();
@@ -36,8 +45,19 @@ export function PreviewClient({ cvId }: { cvId: string }) {
   async function loadCV() {
     setIsLoading(true);
     setError(null);
+    const id =
+      cvId ||
+      (typeof window !== "undefined" ? localStorage.getItem(LOCAL_CV_KEY) : "") ||
+      "";
+
+    if (!id) {
+      setError("Aucun CV à afficher. Commencez par créer votre CV.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch(cvId ? `/api/cv/${cvId}` : "/api/cv");
+      const response = await fetch(`/api/cv/${id}`, { credentials: "include" });
       const payload = await response.json();
 
       if (!response.ok) {
@@ -45,10 +65,9 @@ export function PreviewClient({ cvId }: { cvId: string }) {
         return;
       }
 
-      if (cvId && payload?.data) {
+      if (payload?.data) {
         setCv(payload.data);
-      } else if (!cvId && payload?.data?.length) {
-        setCv(payload.data[0]);
+        setResolvedCvId(id);
       } else {
         setError("Aucun CV trouvé");
       }
@@ -60,10 +79,11 @@ export function PreviewClient({ cvId }: { cvId: string }) {
   }
 
   async function handleDownloadPDF() {
-    if (!cvId) return;
+    const id = resolvedCvId || cvId;
+    if (!id) return;
     setIsGeneratingPDF(true);
     try {
-      window.open(`/api/cv/${cvId}/pdf`, '_blank');
+      window.open(`/api/cv/${id}/pdf`, "_blank");
     } catch (error) {
       console.error("Erreur lors du téléchargement:", error);
     } finally {
@@ -142,10 +162,10 @@ export function PreviewClient({ cvId }: { cvId: string }) {
               Retour
             </button>
             <Link
-              href="/my-cvs"
+              href="/cv"
               className="px-6 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium hover:shadow-lg transition-all"
             >
-              Mes CV
+              Créer un CV
             </Link>
           </div>
         </div>
@@ -181,35 +201,25 @@ export function PreviewClient({ cvId }: { cvId: string }) {
 
               <div className="flex flex-wrap gap-2">
                 <Link
-                  href={`/cv?cvId=${cvId}`}
+                  href={`/cv?cvId=${resolvedCvId || cvId}`}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all duration-200"
                 >
                   <Edit className="w-4 h-4" />
                   Modifier
                 </Link>
 
-                {cv.isPaid ? (
-                  <button
-                    onClick={handleDownloadPDF}
-                    disabled={isGeneratingPDF}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-60"
-                  >
-                    {isGeneratingPDF ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Download className="w-4 h-4" />
-                    )}
-                    Télécharger PDF
-                  </button>
-                ) : (
-                  <Link
-                    href={`/cv?cvId=${cvId}`}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-medium hover:shadow-lg transition-all duration-200"
-                  >
-                    <AlertCircle className="w-4 h-4" />
-                    Payer
-                  </Link>
-                )}
+                <button
+                  onClick={handleDownloadPDF}
+                  disabled={isGeneratingPDF}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-60"
+                >
+                  {isGeneratingPDF ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  Télécharger PDF
+                </button>
 
                 <button
                   onClick={toggleFullscreen}
@@ -223,67 +233,13 @@ export function PreviewClient({ cvId }: { cvId: string }) {
           </div>
         )}
 
-        {/* Status Banner pour non payé */}
-        {!cv.isPaid && !isFullscreen && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-semibold text-amber-800">Version de démonstration</p>
-                <p className="text-sm text-amber-700 mt-1">
-                  Ce CV n'a pas encore été payé. Le téléchargement PDF sera disponible après paiement.
-                </p>
-                <Link
-                  href={`/cv?cvId=${cvId}`}
-                  className="inline-flex items-center gap-2 mt-3 text-sm font-medium text-amber-800 hover:text-amber-900 transition-colors"
-                >
-                  Procéder au paiement →
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Status Banner pour expiré */}
-        {cv.isExpired && !isFullscreen && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-semibold text-red-800">Lien expiré</p>
-                <p className="text-sm text-red-700 mt-1">
-                  Votre période de téléchargement a expiré. Vous devez effectuer un nouveau paiement.
-                </p>
-                <Link
-                  href={`/cv?cvId=${cvId}`}
-                  className="inline-flex items-center gap-2 mt-3 text-sm font-medium text-red-800 hover:text-red-900 transition-colors"
-                >
-                  Renouveler l'accès →
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Info pour téléchargeable */}
-        {cv.isPaid && !cv.isExpired && !isFullscreen && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <div className="flex-1">
-                <p className="font-semibold text-green-800">Version complète disponible</p>
-                <p className="text-sm text-green-700">
-                  Vous pouvez télécharger ce CV en PDF.
-                </p>
-              </div>
-              {cv.expiresAt && (
-                <div className="flex items-center gap-2 text-sm text-green-700">
-                  <Clock className="w-4 h-4" />
-                  <span>Valable jusqu'au {new Date(cv.expiresAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
-                </div>
-              )}
-            </div>
-          </div>
+        {!isLoggedIn && !isFullscreen && (
+          <SaveAccountCta
+            cvId={resolvedCvId || cvId}
+            defaultEmail={cv.email}
+            defaultFullName={cv.fullName}
+            onAuthSuccess={() => setIsLoggedIn(true)}
+          />
         )}
 
         {/* Aperçu du CV */}

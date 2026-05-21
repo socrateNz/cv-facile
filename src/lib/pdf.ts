@@ -16,18 +16,24 @@ function getAppBaseUrl() {
  */
 export async function generateCvPdfBuffer(
   cv: CVDocument,
-  options?: { cvId?: string; authToken?: string },
+  options?: { cvId?: string; authToken?: string; guestId?: string },
 ) {
   const cvId = options?.cvId || cv._id;
-  if (cvId && options?.authToken !== undefined) {
-    return generateCvPdfFromPrintPage(String(cvId), options.authToken);
+  if (cvId && (options?.authToken || options?.guestId)) {
+    return generateCvPdfFromPrintPage(String(cvId), {
+      authToken: options.authToken || "",
+      guestId: options.guestId || "",
+    });
   }
 
   // Fallback HTML simple si pas d'id (ne devrait pas arriver en prod)
   return generateCvPdfFromHtml(cv);
 }
 
-async function generateCvPdfFromPrintPage(cvId: string, authToken: string) {
+async function generateCvPdfFromPrintPage(
+  cvId: string,
+  cookies: { authToken: string; guestId: string },
+) {
   const baseUrl = getAppBaseUrl();
   const browser = await puppeteer.launch({
     headless: true,
@@ -40,13 +46,27 @@ async function generateCvPdfFromPrintPage(cvId: string, authToken: string) {
     url.searchParams.set("cvId", cvId);
 
     const { hostname } = url;
-    await page.setCookie({
-      name: "cvfacile_token",
-      value: authToken,
-      domain: hostname === "localhost" ? "localhost" : hostname,
-      path: "/",
-      httpOnly: true,
-    });
+    const domain = hostname === "localhost" ? "localhost" : hostname;
+
+    if (cookies.authToken) {
+      await page.setCookie({
+        name: "cvfacile_token",
+        value: cookies.authToken,
+        domain,
+        path: "/",
+        httpOnly: true,
+      });
+    }
+
+    if (cookies.guestId) {
+      await page.setCookie({
+        name: "cvfacile_guest",
+        value: cookies.guestId,
+        domain,
+        path: "/",
+        httpOnly: true,
+      });
+    }
 
     await page.goto(url.toString(), {
       waitUntil: "networkidle0",

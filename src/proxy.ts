@@ -2,13 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 const SESSION_COOKIE = "cvfacile_token";
 
-const PROTECTED_PREFIXES = [
-  "/templates",
-  "/cv",
-  "/my-cvs",
-  "/preview",
-  "/admin",
-];
+/** Seules les pages « compte » exigent une connexion */
+const PROTECTED_PREFIXES = ["/my-cvs", "/admin"];
 
 type JwtPayload = {
   exp?: number;
@@ -69,11 +64,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/templates/:path*",
-    "/cv/:path*",
-    "/my-cvs/:path*",
-    "/preview/:path*",
-    "/admin/:path*",
-  ],
+  matcher: ["/my-cvs/:path*", "/admin/:path*"],
 };

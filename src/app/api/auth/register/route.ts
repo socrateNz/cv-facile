@@ -3,6 +3,7 @@ import { hash } from "bcryptjs";
 import { connectToDatabase } from "@/lib/mongodb";
 import { UserModel } from "@/models/User";
 import { SESSION_COOKIE_NAME, signSessionToken } from "@/lib/auth";
+import { claimGuestCvs, getGuestId } from "@/lib/guest";
 import { registerSchema } from "@/lib/validators";
 import { auditAuthFailure, auditEvent } from "@/lib/audit";
 
@@ -69,10 +70,14 @@ export async function POST(req: NextRequest) {
     maxAge: 60 * 60 * 24 * 7,
   });
 
+  const guestId = getGuestId(req);
+  const claimed = await claimGuestCvs(guestId, String(user._id));
+
   auditEvent({
     action: "auth.register",
     userId: String(user._id),
     status: "success",
+    meta: { claimedCvs: claimed },
   });
 
   return response;

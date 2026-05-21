@@ -139,13 +139,21 @@ export function Header() {
             )}
           </div>
         ) : (
-          <Link
-            href="/auth/login"
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-medium px-4 py-2 rounded-lg transition-all"
-          >
-            <FileText className="w-3.5 h-3.5" />
-            Connexion
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/templates"
+              className="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Créer un CV
+            </Link>
+            <Link
+              href="/auth/login"
+              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-medium px-4 py-2 rounded-lg transition-all"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              Connexion
+            </Link>
+          </div>
         )}
       </nav>
     </header>

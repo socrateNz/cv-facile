@@ -23,7 +23,8 @@ const EducationSchema = new Schema(
 
 const CVSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", default: null, index: true },
+    guestId: { type: String, default: null, index: true },
     fullName: { type: String, default: "", trim: true },
     email: { type: String, default: "", lowercase: true, trim: true },
     phone: { type: String, default: "", trim: true },
