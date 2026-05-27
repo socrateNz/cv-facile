@@ -13,8 +13,10 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { Header } from "@/components/header";
+import { getSiteSettings } from "@/lib/settings";
 
-export default function Home() {
+export default async function Home() {
+  const settings = await getSiteSettings();
   const features = [
     {
       icon: Save,
@@ -39,7 +41,7 @@ export default function Home() {
     },
     {
       icon: CreditCard,
-      title: "Mobile Money 500 FCFA",
+      title: `Mobile Money ${settings?.payment.paymentAmount} ${settings?.payment.currency}`,
       description: "MTN ou Orange Money — sans compte obligatoire",
       bg: "bg-emerald-50",
       iconColor: "text-emerald-600",
@@ -71,7 +73,7 @@ export default function Home() {
     { step: "01", title: "Remplissez", desc: "Vos informations professionnelles" },
     { step: "02", title: "Choisissez", desc: "Votre template préféré" },
     { step: "03", title: "Prévisualisez", desc: "Vérifiez le rendu en direct" },
-    { step: "04", title: "Payez & téléchargez", desc: "500 FCFA — PDF professionnel" },
+    { step: "04", title: "Payez & téléchargez", desc: `${settings?.payment.paymentAmount} ${settings?.payment.currency} — PDF professionnel` },
   ];
 
   const avatarInitials = ["AB", "CK", "DM", "EF"];
@@ -95,7 +97,7 @@ export default function Home() {
 
             <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-md">
               Formulaire simple, aperçu en temps réel, export PDF premium et paiement Mobile Money à seulement{" "}
-              <span className="font-semibold text-indigo-600">500 FCFA</span>.
+              <span className="font-semibold text-indigo-600">{settings?.payment.paymentAmount} {settings?.payment.currency}</span>.
             </p>
 
             <div className="flex flex-wrap gap-3 mb-8">
@@ -246,7 +248,7 @@ export default function Home() {
               Prêt à décrocher votre prochain poste ?
             </h2>
             <p className="text-indigo-200 text-lg mb-8 max-w-xl mx-auto">
-              Rejoignez plus de 1 000 professionnels qui ont boosté leur carrière avec CVFacile
+              Rejoignez plus de 1 000 professionnels qui ont boosté leur carrière avec {settings?.general.siteName}
             </p>
             <Link
               href="/templates"
@@ -271,10 +273,10 @@ export default function Home() {
                 <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center">
                   <FileText className="w-3.5 h-3.5 text-white" />
                 </div>
-                <span className="font-semibold text-gray-900">CVFacile</span>
+                <span className="font-semibold text-gray-900">{settings?.general.siteName}</span>
               </div>
               <p className="text-sm text-gray-500 leading-relaxed">
-                Créez votre CV professionnel facilement et rapidement.
+                {settings?.general.siteDescription}
               </p>
             </div>
 
@@ -306,7 +308,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-gray-100 pt-6 text-center text-sm text-gray-400">
-            © 2024 CVFacile — Tous droits réservés
+            © {new Date().getFullYear()} {settings?.general.siteName} — Tous droits réservés
           </div>
         </div>
       </footer>

@@ -177,7 +177,7 @@ export default function AdminSettingsPage() {
         return (
             <div className="flex items-center justify-center py-20">
                 <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+                    <div className="w-16 h-16 border-4 border-gray-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-gray-500">Chargement des paramètres...</p>
                 </div>
             </div>
@@ -195,7 +195,7 @@ export default function AdminSettingsPage() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold text-indigo-600">
                     Paramètres
                 </h1>
                 <p className="text-gray-600 mt-2">Configuration avancée de la plateforme</p>
@@ -234,7 +234,7 @@ export default function AdminSettingsPage() {
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
                                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${activeTab === tab.id
-                                                ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
+                                                ? "bg-indigo-600 text-white shadow-md"
                                                 : "text-gray-700 hover:bg-gray-50"
                                             }`}
                                     >
@@ -251,7 +251,7 @@ export default function AdminSettingsPage() {
                 <div className="flex-1 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                     <div className="p-6 border-b border-gray-100">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center">
                                 {tabs.find(t => t.id === activeTab)?.icon && (
                                     <Settings className="w-5 h-5 text-white" />
                                 )}
@@ -279,7 +279,7 @@ export default function AdminSettingsPage() {
                                         type="text"
                                         value={settings.general.siteName}
                                         onChange={(e) => updateSetting("general", "siteName", e.target.value)}
-                                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                     />
                                 </div>
 
@@ -291,7 +291,7 @@ export default function AdminSettingsPage() {
                                         value={settings.general.siteDescription}
                                         onChange={(e) => updateSetting("general", "siteDescription", e.target.value)}
                                         rows={3}
-                                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                     />
                                 </div>
 
@@ -306,7 +306,7 @@ export default function AdminSettingsPage() {
                                                 type="email"
                                                 value={settings.general.contactEmail}
                                                 onChange={(e) => updateSetting("general", "contactEmail", e.target.value)}
-                                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                             />
                                         </div>
                                     </div>
@@ -321,7 +321,7 @@ export default function AdminSettingsPage() {
                                                 type="tel"
                                                 value={settings.general.contactPhone}
                                                 onChange={(e) => updateSetting("general", "contactPhone", e.target.value)}
-                                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                             />
                                         </div>
                                     </div>
@@ -337,7 +337,7 @@ export default function AdminSettingsPage() {
                                             value={settings.general.address}
                                             onChange={(e) => updateSetting("general", "address", e.target.value)}
                                             rows={2}
-                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -357,7 +357,7 @@ export default function AdminSettingsPage() {
                                             value={settings.payment.notchpayApiKey}
                                             onChange={(e) => updateSetting("payment", "notchpayApiKey", e.target.value)}
                                             placeholder="Entrez votre clé API NotchPay"
-                                            className="w-full pr-24 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all pl-4"
+                                            className="w-full pr-24 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all pl-4"
                                         />
                                         <button
                                             onClick={() => setShowApiKey(!showApiKey)}
@@ -379,7 +379,7 @@ export default function AdminSettingsPage() {
                                             value={settings.payment.notchpaySecret}
                                             onChange={(e) => updateSetting("payment", "notchpaySecret", e.target.value)}
                                             placeholder="Entrez votre secret NotchPay"
-                                            className="w-full pr-24 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all pl-4"
+                                            className="w-full pr-24 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all pl-4"
                                         />
                                         <button
                                             onClick={() => setShowSecret(!showSecret)}
@@ -401,7 +401,7 @@ export default function AdminSettingsPage() {
                                                 type="number"
                                                 value={settings.payment.paymentAmount}
                                                 onChange={(e) => updateSetting("payment", "paymentAmount", parseInt(e.target.value))}
-                                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                             />
                                         </div>
                                     </div>
@@ -413,7 +413,7 @@ export default function AdminSettingsPage() {
                                         <select
                                             value={settings.payment.currency}
                                             onChange={(e) => updateSetting("payment", "currency", e.target.value)}
-                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                         >
                                             <option value="XAF">FCFA (XAF)</option>
                                             <option value="EUR">Euro (EUR)</option>
@@ -429,7 +429,7 @@ export default function AdminSettingsPage() {
                                     </div>
                                     <button
                                         onClick={() => updateSetting("payment", "sandboxMode", !settings.payment.sandboxMode)}
-                                        className={`relative w-12 h-6 rounded-full transition-colors ${settings.payment.sandboxMode ? "bg-blue-600" : "bg-gray-300"
+                                        className={`relative w-12 h-6 rounded-full transition-colors ${settings.payment.sandboxMode ? "bg-indigo-600" : "bg-gray-300"
                                             }`}
                                     >
                                         <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${settings.payment.sandboxMode ? "left-7" : "left-1"
@@ -449,7 +449,7 @@ export default function AdminSettingsPage() {
                                     </div>
                                     <button
                                         onClick={() => updateSetting("security", "allowRegistration", !settings.security.allowRegistration)}
-                                        className={`relative w-12 h-6 rounded-full transition-colors ${settings.security.allowRegistration ? "bg-blue-600" : "bg-gray-300"
+                                        className={`relative w-12 h-6 rounded-full transition-colors ${settings.security.allowRegistration ? "bg-indigo-600" : "bg-gray-300"
                                             }`}
                                     >
                                         <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${settings.security.allowRegistration ? "left-7" : "left-1"
@@ -464,7 +464,7 @@ export default function AdminSettingsPage() {
                                     </div>
                                     <button
                                         onClick={() => updateSetting("security", "requireEmailVerification", !settings.security.requireEmailVerification)}
-                                        className={`relative w-12 h-6 rounded-full transition-colors ${settings.security.requireEmailVerification ? "bg-blue-600" : "bg-gray-300"
+                                        className={`relative w-12 h-6 rounded-full transition-colors ${settings.security.requireEmailVerification ? "bg-indigo-600" : "bg-gray-300"
                                             }`}
                                     >
                                         <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${settings.security.requireEmailVerification ? "left-7" : "left-1"
@@ -483,7 +483,7 @@ export default function AdminSettingsPage() {
                                                 type="number"
                                                 value={settings.security.sessionTimeout}
                                                 onChange={(e) => updateSetting("security", "sessionTimeout", parseInt(e.target.value))}
-                                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                             />
                                         </div>
                                     </div>
@@ -496,7 +496,7 @@ export default function AdminSettingsPage() {
                                             type="number"
                                             value={settings.security.maxLoginAttempts}
                                             onChange={(e) => updateSetting("security", "maxLoginAttempts", parseInt(e.target.value))}
-                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -516,7 +516,7 @@ export default function AdminSettingsPage() {
                                             type="email"
                                             value={settings.notifications.adminEmail}
                                             onChange={(e) => updateSetting("notifications", "adminEmail", e.target.value)}
-                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -529,7 +529,7 @@ export default function AdminSettingsPage() {
                                         </div>
                                         <button
                                             onClick={() => updateSetting("notifications", "notifyOnNewUser", !settings.notifications.notifyOnNewUser)}
-                                            className={`relative w-12 h-6 rounded-full transition-colors ${settings.notifications.notifyOnNewUser ? "bg-blue-600" : "bg-gray-300"
+                                            className={`relative w-12 h-6 rounded-full transition-colors ${settings.notifications.notifyOnNewUser ? "bg-indigo-600" : "bg-gray-300"
                                                 }`}
                                         >
                                             <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${settings.notifications.notifyOnNewUser ? "left-7" : "left-1"
@@ -544,7 +544,7 @@ export default function AdminSettingsPage() {
                                         </div>
                                         <button
                                             onClick={() => updateSetting("notifications", "notifyOnNewPayment", !settings.notifications.notifyOnNewPayment)}
-                                            className={`relative w-12 h-6 rounded-full transition-colors ${settings.notifications.notifyOnNewPayment ? "bg-blue-600" : "bg-gray-300"
+                                            className={`relative w-12 h-6 rounded-full transition-colors ${settings.notifications.notifyOnNewPayment ? "bg-indigo-600" : "bg-gray-300"
                                                 }`}
                                         >
                                             <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${settings.notifications.notifyOnNewPayment ? "left-7" : "left-1"
@@ -559,7 +559,7 @@ export default function AdminSettingsPage() {
                                         </div>
                                         <button
                                             onClick={() => updateSetting("notifications", "notifyOnNewCV", !settings.notifications.notifyOnNewCV)}
-                                            className={`relative w-12 h-6 rounded-full transition-colors ${settings.notifications.notifyOnNewCV ? "bg-blue-600" : "bg-gray-300"
+                                            className={`relative w-12 h-6 rounded-full transition-colors ${settings.notifications.notifyOnNewCV ? "bg-indigo-600" : "bg-gray-300"
                                                 }`}
                                         >
                                             <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${settings.notifications.notifyOnNewCV ? "left-7" : "left-1"
@@ -589,7 +589,7 @@ export default function AdminSettingsPage() {
                                                 type="text"
                                                 value={settings.appearance.primaryColor}
                                                 onChange={(e) => updateSetting("appearance", "primaryColor", e.target.value)}
-                                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                             />
                                         </div>
                                     </div>
@@ -606,7 +606,7 @@ export default function AdminSettingsPage() {
                                             value={settings.appearance.logoUrl}
                                             onChange={(e) => updateSetting("appearance", "logoUrl", e.target.value)}
                                             placeholder="https://example.com/logo.png"
-                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -622,7 +622,7 @@ export default function AdminSettingsPage() {
                                             value={settings.appearance.faviconUrl}
                                             onChange={(e) => updateSetting("appearance", "faviconUrl", e.target.value)}
                                             placeholder="https://example.com/favicon.ico"
-                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -643,7 +643,7 @@ export default function AdminSettingsPage() {
                                                 type="number"
                                                 value={settings.limits.maxCVPerUser}
                                                 onChange={(e) => updateSetting("limits", "maxCVPerUser", parseInt(e.target.value))}
-                                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                             />
                                         </div>
                                     </div>
@@ -656,7 +656,7 @@ export default function AdminSettingsPage() {
                                             type="number"
                                             value={settings.limits.maxFileSize}
                                             onChange={(e) => updateSetting("limits", "maxFileSize", parseInt(e.target.value))}
-                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -671,7 +671,7 @@ export default function AdminSettingsPage() {
                                             type="number"
                                             value={settings.limits.cvRetentionDays}
                                             onChange={(e) => updateSetting("limits", "cvRetentionDays", parseInt(e.target.value))}
-                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
                                         />
                                     </div>
                                     <p className="text-xs text-gray-500 mt-1">
@@ -687,7 +687,7 @@ export default function AdminSettingsPage() {
                         <button
                             onClick={saveSettings}
                             disabled={isSaving}
-                            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium hover:shadow-lg transition-all disabled:opacity-50"
+                            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 hover:shadow-lg transition-all disabled:opacity-50"
                         >
                             {isSaving ? (
                                 <RefreshCw className="w-4 h-4 animate-spin" />

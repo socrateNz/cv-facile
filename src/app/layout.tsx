@@ -12,10 +12,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "CVFacile",
-  description: "Créez, payez et téléchargez votre CV en quelques minutes.",
-};
+import { getSiteSettings } from "@/lib/settings";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: settings?.general.siteName,
+    description: settings?.general.siteDescription,
+  };
+}
 
 export default function RootLayout({
   children,

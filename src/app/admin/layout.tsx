@@ -72,7 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30">
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 py-3">
         <div className="flex items-center justify-between">
@@ -130,7 +130,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
+                        ? "bg-indigo-600 text-white shadow-md"
                         : "text-gray-700 hover:bg-gray-100"
                         }`}
                     >
@@ -181,7 +181,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   key={item.href}
                   href={item.href}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
+                    ? "bg-indigo-600 text-white shadow-md"
                     : "text-gray-700 hover:bg-gray-100"
                     } ${!isSidebarOpen && "justify-center"}`}
                   title={!isSidebarOpen ? item.label : undefined}
