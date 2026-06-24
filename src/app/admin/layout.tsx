@@ -15,7 +15,8 @@ import {
   ChevronRight,
   Shield,
   Download,
-  BarChart3
+  BarChart3,
+  Sparkles
 } from "lucide-react";
 import { useState } from "react";
 
@@ -49,6 +50,12 @@ const navItems = [
     href: "/admin/stats",
     icon: BarChart3,
     color: "text-cyan-400"
+  },
+  {
+    label: "Assistant IA",
+    href: "/admin/ai",
+    icon: Sparkles,
+    color: "text-yellow-400"
   },
   {
     label: "Paramètres",

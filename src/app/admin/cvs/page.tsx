@@ -16,7 +16,9 @@ import {
   User,
   LayoutTemplate,
   Download,
-  Filter
+  Filter,
+  Sparkles,
+  ShieldAlert
 } from "lucide-react";
 
 type CVItem = {
@@ -47,6 +49,7 @@ export default function AdminCvsPage() {
   const [paymentFilter, setPaymentFilter] = useState<"all" | "paid" | "unpaid">("all");
   const [actionId, setActionId] = useState<string | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState<string | null>(null);
+  const [scanResults, setScanResults] = useState<Record<string, { status: "sain" | "suspect", reason: string }>>({});
 
   async function load() {
     setIsLoading(true);
@@ -91,6 +94,25 @@ export default function AdminCvsPage() {
     } finally {
       setActionId(null);
       setShowConfirmModal(null);
+    }
+  }
+
+  async function scanCV(id: string) {
+    setActionId(`scan-${id}`);
+    try {
+      const response = await fetch(`/api/admin/ai/moderate`, {
+        method: "POST",
+        headers: { ...adminHeaders, "Content-Type": "application/json" },
+        body: JSON.stringify({ cvId: id })
+      });
+      const data = await response.json();
+      if (data.success) {
+        setScanResults(prev => ({ ...prev, [id]: data.result }));
+      }
+    } catch (error) {
+      console.error("Erreur lors du scan:", error);
+    } finally {
+      setActionId(null);
     }
   }
 
@@ -317,11 +339,19 @@ export default function AdminCvsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <User className="w-4 h-4 text-slate-500" />
-                          <span className="text-sm text-slate-300">
-                            {cv.userId?.fullName || cv.email || "N/A"}
-                          </span>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2">
+                            <User className="w-4 h-4 text-slate-500" />
+                            <span className="text-sm text-slate-300">
+                              {cv.userId?.fullName || cv.email || "N/A"}
+                            </span>
+                          </div>
+                          {scanResults[cv._id] && (
+                            <div className={`text-xs flex items-center gap-1 font-medium ${scanResults[cv._id].status === "sain" ? "text-emerald-400" : "text-red-400"}`}>
+                              {scanResults[cv._id].status === "sain" ? <CheckCircle className="w-3 h-3" /> : <ShieldAlert className="w-3 h-3" />}
+                              {scanResults[cv._id].status === "sain" ? "Sain" : scanResults[cv._id].reason}
+                            </div>
+                          )}
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -358,6 +388,18 @@ export default function AdminCvsPage() {
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
+                          <button
+                            onClick={() => scanCV(cv._id)}
+                            disabled={actionId === `scan-${cv._id}`}
+                            className="p-2 rounded-lg text-yellow-400 hover:bg-white/5 transition-all disabled:opacity-50"
+                            title="Scan IA Anti-Spam"
+                          >
+                            {actionId === `scan-${cv._id}` ? (
+                              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <Sparkles className="w-4 h-4" />
+                            )}
+                          </button>
                           <Link
                             href={`/api/cv/${cv._id}/pdf`}
                             target="_blank"

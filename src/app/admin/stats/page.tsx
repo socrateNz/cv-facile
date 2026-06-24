@@ -17,7 +17,8 @@ import {
     DollarSign,
     UserCheck,
     FileCheck,
-    Clock
+    Clock,
+    Sparkles
 } from "lucide-react";
 import Link from "next/link";
 
@@ -48,6 +49,9 @@ export default function AdminStatsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [period, setPeriod] = useState<"week" | "month" | "year">("month");
     const [error, setError] = useState<string | null>(null);
+
+    const [insights, setInsights] = useState<string | null>(null);
+    const [isLoadingInsights, setIsLoadingInsights] = useState(false);
 
     useEffect(() => {
         loadStats();
@@ -80,6 +84,26 @@ export default function AdminStatsPage() {
             setIsLoading(false);
         }
     }
+
+    async function loadInsights() {
+        setIsLoadingInsights(true);
+        try {
+            const response = await fetch('/api/admin/ai/insights');
+            const data = await response.json();
+            if (data.success && data.insights) {
+                setInsights(data.insights);
+            }
+        } catch (err) {
+            console.error("Erreur de chargement des insights", err);
+        } finally {
+            setIsLoadingInsights(false);
+        }
+    }
+
+    useEffect(() => {
+        // Charger les insights IA seulement au montage
+        loadInsights();
+    }, []);
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('fr-FR').format(amount) + " FCFA";
@@ -159,6 +183,25 @@ export default function AdminStatsPage() {
                     >
                         <RefreshCw className="w-5 h-5" />
                     </button>
+                </div>
+            </div>
+
+            {/* AI Insights Card */}
+            <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 backdrop-blur-xl rounded-2xl p-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-indigo-500/20 rounded-full mix-blend-screen filter blur-xl opacity-70 animate-pulse"></div>
+                <div className="flex items-start gap-4">
+                    <div className="p-3 bg-indigo-500/20 rounded-xl border border-indigo-500/30 shrink-0">
+                        <Sparkles className="w-6 h-6 text-indigo-400" />
+                    </div>
+                    <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                            Analyse IA des Tendances
+                            {isLoadingInsights && <RefreshCw className="w-4 h-4 animate-spin text-indigo-400" />}
+                        </h3>
+                        <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
+                            {isLoadingInsights ? "Analyse des données en cours..." : insights ? insights : "Les insights IA ne sont pas disponibles pour le moment."}
+                        </div>
+                    </div>
                 </div>
             </div>
 
