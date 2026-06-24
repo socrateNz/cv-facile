@@ -17,6 +17,12 @@ export async function GET(
     return NextResponse.json({ message: "Accès refusé." }, { status: 403 });
   }
 
+  if (session?.role === "admin") {
+    return NextResponse.json({
+      data: { isPaid: true, expiresAt: null, reference: null },
+    });
+  }
+
   const payment = await getValidPaymentForCv(id);
 
   return NextResponse.json({

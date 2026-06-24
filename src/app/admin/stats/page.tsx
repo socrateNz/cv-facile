@@ -93,8 +93,8 @@ export default function AdminStatsPage() {
         return (
             <div className="flex items-center justify-center py-20">
                 <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-500">Chargement des statistiques...</p>
+                    <div className="w-16 h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-slate-500">Chargement des statistiques...</p>
                 </div>
             </div>
         );
@@ -102,15 +102,15 @@ export default function AdminStatsPage() {
 
     if (error) {
         return (
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
-                <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-                    <BarChart3 className="w-10 h-10 text-red-600" />
+            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-12 text-center">
+                <div className="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+                    <BarChart3 className="w-10 h-10 text-red-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Erreur de chargement</h3>
-                <p className="text-gray-500 mb-6">{error}</p>
+                <h3 className="text-lg font-semibold text-white mb-2">Erreur de chargement</h3>
+                <p className="text-slate-400 mb-6">{error}</p>
                 <button
                     onClick={loadStats}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium hover:shadow-lg transition-all"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 text-white font-medium hover:shadow-lg hover:shadow-indigo-500/20 transition-all"
                 >
                     <RefreshCw className="w-4 h-4" />
                     Réessayer
@@ -135,17 +135,17 @@ export default function AdminStatsPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">
                         Statistiques globales
                     </h1>
-                    <p className="text-gray-600 mt-2">Analyse détaillée de votre plateforme</p>
+                    <p className="text-slate-400 mt-2">Analyse détaillée de votre plateforme</p>
                 </div>
 
                 <div className="flex gap-2">
                     <select
                         value={period}
                         onChange={(e) => setPeriod(e.target.value as any)}
-                        className="px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 transition-all"
+                        className="px-4 py-2 rounded-xl bg-slate-900/50 backdrop-blur-xl border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all [&>option]:bg-slate-900"
                     >
                         <option value="week">7 derniers jours</option>
                         <option value="month">30 derniers jours</option>
@@ -154,10 +154,10 @@ export default function AdminStatsPage() {
 
                     <button
                         onClick={loadStats}
-                        className="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition-all"
+                        className="p-2 rounded-xl bg-slate-900/50 backdrop-blur-xl border border-white/10 hover:bg-white/5 transition-all text-slate-400 hover:text-white"
                         title="Rafraîchir"
                     >
-                        <RefreshCw className="w-5 h-5 text-gray-600" />
+                        <RefreshCw className="w-5 h-5" />
                     </button>
                 </div>
             </div>
@@ -165,82 +165,82 @@ export default function AdminStatsPage() {
             {/* Main KPIs */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {/* Utilisateurs */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-6 hover:shadow-xl hover:shadow-indigo-500/10 transition-all">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                            <Users className="w-6 h-6 text-blue-600" />
+                        <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                            <Users className="w-6 h-6 text-indigo-400" />
                         </div>
                         {(stats.usersGrowth !== undefined && stats.usersGrowth !== 0) && (
-                            <div className={`flex items-center gap-1 text-sm font-medium ${stats.usersGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <div className={`flex items-center gap-1 text-sm font-medium ${stats.usersGrowth >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                                 {stats.usersGrowth >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
                                 {Math.abs(stats.usersGrowth)}%
                             </div>
                         )}
                     </div>
                     <div>
-                        <p className="text-sm text-gray-500 font-medium">Utilisateurs</p>
-                        <p className="text-3xl font-bold text-gray-900 mt-1">{formatNumber(stats.usersCount)}</p>
-                        <p className="text-xs text-gray-400 mt-2">
+                        <p className="text-sm text-slate-400 font-medium">Utilisateurs</p>
+                        <p className="text-3xl font-bold text-white mt-1">{formatNumber(stats.usersCount)}</p>
+                        <p className="text-xs text-slate-500 mt-2">
                             Total inscrits
                         </p>
                     </div>
                 </div>
 
                 {/* CV Créés */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-6 hover:shadow-xl hover:shadow-fuchsia-500/10 transition-all">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
-                            <FileText className="w-6 h-6 text-purple-600" />
+                        <div className="w-12 h-12 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center">
+                            <FileText className="w-6 h-6 text-fuchsia-400" />
                         </div>
                         {(stats.cvsGrowth !== undefined && stats.cvsGrowth !== 0) && (
-                            <div className={`flex items-center gap-1 text-sm font-medium ${stats.cvsGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <div className={`flex items-center gap-1 text-sm font-medium ${stats.cvsGrowth >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                                 {stats.cvsGrowth >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
                                 {Math.abs(stats.cvsGrowth)}%
                             </div>
                         )}
                     </div>
                     <div>
-                        <p className="text-sm text-gray-500 font-medium">CV créés</p>
-                        <p className="text-3xl font-bold text-gray-900 mt-1">{formatNumber(stats.cvsCount)}</p>
-                        <p className="text-xs text-gray-400 mt-2">
+                        <p className="text-sm text-slate-400 font-medium">CV créés</p>
+                        <p className="text-3xl font-bold text-white mt-1">{formatNumber(stats.cvsCount)}</p>
+                        <p className="text-xs text-slate-500 mt-2">
                             Total documents
                         </p>
                     </div>
                 </div>
 
                 {/* Revenus */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-6 hover:shadow-xl hover:shadow-emerald-500/10 transition-all">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
-                            <DollarSign className="w-6 h-6 text-green-600" />
+                        <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                            <DollarSign className="w-6 h-6 text-emerald-400" />
                         </div>
                         {(stats.revenueGrowth !== undefined && stats.revenueGrowth !== 0) && (
-                            <div className={`flex items-center gap-1 text-sm font-medium ${stats.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <div className={`flex items-center gap-1 text-sm font-medium ${stats.revenueGrowth >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                                 {stats.revenueGrowth >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
                                 {Math.abs(stats.revenueGrowth)}%
                             </div>
                         )}
                     </div>
                     <div>
-                        <p className="text-sm text-gray-500 font-medium">Revenus totaux</p>
-                        <p className="text-3xl font-bold text-gray-900 mt-1">{formatCurrency(stats.revenue)}</p>
-                        <p className="text-xs text-gray-400 mt-2">
+                        <p className="text-sm text-slate-400 font-medium">Revenus totaux</p>
+                        <p className="text-3xl font-bold text-white mt-1">{formatCurrency(stats.revenue)}</p>
+                        <p className="text-xs text-slate-500 mt-2">
                             {formatCurrency(stats.paymentsThisMonth || 0)} ce mois
                         </p>
                     </div>
                 </div>
 
                 {/* Taux de conversion */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-6 hover:shadow-xl hover:shadow-amber-500/10 transition-all">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-                            <TrendingUp className="w-6 h-6 text-amber-600" />
+                        <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                            <TrendingUp className="w-6 h-6 text-amber-400" />
                         </div>
                     </div>
                     <div>
-                        <p className="text-sm text-gray-500 font-medium">Taux de conversion</p>
-                        <p className="text-3xl font-bold text-gray-900 mt-1">{conversionRate}%</p>
-                        <p className="text-xs text-gray-400 mt-2">
+                        <p className="text-sm text-slate-400 font-medium">Taux de conversion</p>
+                        <p className="text-3xl font-bold text-white mt-1">{conversionRate}%</p>
+                        <p className="text-xs text-slate-500 mt-2">
                             {stats.paymentsThisMonth || 0} paiements ce mois
                         </p>
                     </div>
@@ -250,79 +250,79 @@ export default function AdminStatsPage() {
             {/* Graphiques et analyses */}
             <div className="grid gap-6 lg:grid-cols-2">
                 {/* Répartition des templates */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-6">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
                             <PieChart className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-900">Templates populaires</h3>
-                            <p className="text-xs text-gray-500">Répartition par modèle</p>
+                            <h3 className="font-semibold text-white">Templates populaires</h3>
+                            <p className="text-xs text-slate-400">Répartition par modèle</p>
                         </div>
                     </div>
 
                     <div className="space-y-4">
                         <div>
                             <div className="flex justify-between text-sm mb-2">
-                                <span className="text-gray-600">Modern</span>
-                                <span className="font-semibold text-gray-900">
+                                <span className="text-slate-300">Modern</span>
+                                <span className="font-semibold text-white">
                                     {stats.cvsCount > 0 ? Math.round((templateStats.modern / stats.cvsCount) * 100) : 0}%
                                 </span>
                             </div>
-                            <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                            <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-white/5">
                                 <div
-                                    className="h-full bg-blue-600 rounded-full transition-all duration-500"
+                                    className="h-full bg-indigo-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]"
                                     style={{ width: `${stats.cvsCount > 0 ? (templateStats.modern / stats.cvsCount) * 100 : 0}%` }}
                                 />
                             </div>
-                            <p className="text-xs text-gray-500 mt-1">{templateStats.modern} CV</p>
+                            <p className="text-xs text-slate-400 mt-1">{templateStats.modern} CV</p>
                         </div>
 
                         <div>
                             <div className="flex justify-between text-sm mb-2">
-                                <span className="text-gray-600">Classic</span>
-                                <span className="font-semibold text-gray-900">
+                                <span className="text-slate-300">Classic</span>
+                                <span className="font-semibold text-white">
                                     {stats.cvsCount > 0 ? Math.round((templateStats.classic / stats.cvsCount) * 100) : 0}%
                                 </span>
                             </div>
-                            <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                            <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-white/5">
                                 <div
-                                    className="h-full bg-gray-600 rounded-full transition-all duration-500"
+                                    className="h-full bg-slate-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(100,116,139,0.5)]"
                                     style={{ width: `${stats.cvsCount > 0 ? (templateStats.classic / stats.cvsCount) * 100 : 0}%` }}
                                 />
                             </div>
-                            <p className="text-xs text-gray-500 mt-1">{templateStats.classic} CV</p>
+                            <p className="text-xs text-slate-400 mt-1">{templateStats.classic} CV</p>
                         </div>
 
                         <div>
                             <div className="flex justify-between text-sm mb-2">
-                                <span className="text-gray-600">Premium</span>
-                                <span className="font-semibold text-gray-900">
+                                <span className="text-slate-300">Premium</span>
+                                <span className="font-semibold text-white">
                                     {stats.cvsCount > 0 ? Math.round((templateStats.premium / stats.cvsCount) * 100) : 0}%
                                 </span>
                             </div>
-                            <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                            <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-white/5">
                                 <div
-                                    className="h-full bg-purple-600 rounded-full transition-all duration-500"
+                                    className="h-full bg-fuchsia-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(217,70,239,0.5)]"
                                     style={{ width: `${stats.cvsCount > 0 ? (templateStats.premium / stats.cvsCount) * 100 : 0}%` }}
                                 />
                             </div>
-                            <p className="text-xs text-gray-500 mt-1">{templateStats.premium} CV</p>
+                            <p className="text-xs text-slate-400 mt-1">{templateStats.premium} CV</p>
                         </div>
                     </div>
 
                     {/* Ratio CV/Utilisateur */}
-                    <div className="mt-6 pt-6 border-t border-gray-100">
+                    <div className="mt-6 pt-6 border-t border-white/10">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">CV par utilisateur</p>
-                                <p className="text-2xl font-bold text-gray-900">
+                                <p className="text-sm text-slate-400">CV par utilisateur</p>
+                                <p className="text-2xl font-bold text-white">
                                     {stats.usersCount > 0 ? (stats.cvsCount / stats.usersCount).toFixed(1) : 0}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">Panier moyen</p>
-                                <p className="text-2xl font-bold text-gray-900">
+                                <p className="text-sm text-slate-400">Panier moyen</p>
+                                <p className="text-2xl font-bold text-white">
                                     {stats.paymentsThisMonth && stats.paymentsThisMonth > 0
                                         ? formatCurrency(stats.revenue / stats.paymentsThisMonth)
                                         : formatCurrency(0)}
@@ -333,37 +333,37 @@ export default function AdminStatsPage() {
                 </div>
 
                 {/* Activité récente */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 overflow-hidden">
+                    <div className="px-6 py-4 border-b border-white/10">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
                                 <Clock className="w-5 h-5 text-white" />
                             </div>
                             <div>
-                                <h3 className="font-semibold text-gray-900">Activité récente</h3>
-                                <p className="text-xs text-gray-500">Dernières actions sur la plateforme</p>
+                                <h3 className="font-semibold text-white">Activité récente</h3>
+                                <p className="text-xs text-slate-400">Dernières actions sur la plateforme</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+                    <div className="divide-y divide-white/10 max-h-96 overflow-y-auto">
                         {/* Nouveaux utilisateurs */}
                         {stats.recentUsers && stats.recentUsers.length > 0 && (
                             <>
-                                <div className="px-6 py-3 bg-gray-50">
-                                    <p className="text-xs font-semibold text-gray-500 uppercase">Nouveaux utilisateurs</p>
+                                <div className="px-6 py-3 bg-slate-900/80">
+                                    <p className="text-xs font-semibold text-slate-500 uppercase">Nouveaux utilisateurs</p>
                                 </div>
                                 {stats.recentUsers.slice(0, 3).map((user) => (
-                                    <div key={user._id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                                    <div key={user._id} className="px-6 py-4 hover:bg-white/5 transition-colors">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                                <UserCheck className="w-5 h-5 text-blue-600" />
+                                            <div className="w-10 h-10 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                                                <UserCheck className="w-5 h-5 text-indigo-400" />
                                             </div>
                                             <div className="flex-1">
-                                                <p className="text-sm font-medium text-gray-900">{user.fullName}</p>
-                                                <p className="text-xs text-gray-500">{user.email}</p>
+                                                <p className="text-sm font-medium text-white">{user.fullName}</p>
+                                                <p className="text-xs text-slate-400">{user.email}</p>
                                             </div>
-                                            <div className="text-xs text-gray-400">
+                                            <div className="text-xs text-slate-500">
                                                 {new Date(user.createdAt).toLocaleDateString("fr-FR")}
                                             </div>
                                         </div>
@@ -375,20 +375,20 @@ export default function AdminStatsPage() {
                         {/* Nouveaux CV */}
                         {stats.recentCVs && stats.recentCVs.length > 0 && (
                             <>
-                                <div className="px-6 py-3 bg-gray-50">
-                                    <p className="text-xs font-semibold text-gray-500 uppercase">Nouveaux CV</p>
+                                <div className="px-6 py-3 bg-slate-900/80">
+                                    <p className="text-xs font-semibold text-slate-500 uppercase">Nouveaux CV</p>
                                 </div>
                                 {stats.recentCVs.slice(0, 3).map((cv) => (
-                                    <div key={cv._id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                                    <div key={cv._id} className="px-6 py-4 hover:bg-white/5 transition-colors">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                                                <FileCheck className="w-5 h-5 text-purple-600" />
+                                            <div className="w-10 h-10 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center">
+                                                <FileCheck className="w-5 h-5 text-fuchsia-400" />
                                             </div>
                                             <div className="flex-1">
-                                                <p className="text-sm font-medium text-gray-900">{cv.fullName}</p>
-                                                <p className="text-xs text-gray-500">{cv.title}</p>
+                                                <p className="text-sm font-medium text-white">{cv.fullName}</p>
+                                                <p className="text-xs text-slate-400">{cv.title}</p>
                                             </div>
-                                            <div className="text-xs text-gray-400">
+                                            <div className="text-xs text-slate-500">
                                                 {new Date(cv.createdAt).toLocaleDateString("fr-FR")}
                                             </div>
                                         </div>
@@ -400,7 +400,7 @@ export default function AdminStatsPage() {
                         {(!stats.recentUsers || stats.recentUsers.length === 0) &&
                             (!stats.recentCVs || stats.recentCVs.length === 0) && (
                                 <div className="px-6 py-12 text-center">
-                                    <p className="text-sm text-gray-500">Aucune activité récente</p>
+                                    <p className="text-sm text-slate-500">Aucune activité récente</p>
                                 </div>
                             )}
                     </div>
@@ -408,11 +408,11 @@ export default function AdminStatsPage() {
             </div>
 
             {/* Export Section */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4">
+            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-4">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <h3 className="font-semibold text-gray-900">Exporter les rapports</h3>
-                        <p className="text-sm text-gray-500">Téléchargez les statistiques au format CSV</p>
+                        <h3 className="font-semibold text-white">Exporter les rapports</h3>
+                        <p className="text-sm text-slate-400">Téléchargez les statistiques au format CSV</p>
                     </div>
                     <button
                         onClick={() => {
@@ -433,7 +433,7 @@ export default function AdminStatsPage() {
                             a.click();
                             URL.revokeObjectURL(url);
                         }}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium hover:shadow-lg transition-all"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 text-white font-medium hover:shadow-lg hover:shadow-indigo-500/20 transition-all"
                     >
                         <Download className="w-4 h-4" />
                         Exporter CSV

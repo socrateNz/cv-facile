@@ -59,6 +59,7 @@ export async function GET(
 
   const authToken = req.cookies.get("cvfacile_token")?.value || "";
   const cvGuestId = cv.guestId ? String(cv.guestId) : guestId || "";
+  const baseUrl = req.nextUrl.origin;
 
   const pdfBuffer = await generateCvPdfBuffer(
     {
@@ -77,7 +78,7 @@ export async function GET(
       createdAt: cv.createdAt?.toISOString(),
       updatedAt: cv.updatedAt?.toISOString(),
     },
-    { cvId: id, authToken, guestId: cvGuestId },
+    { cvId: id, authToken, guestId: cvGuestId, baseUrl },
   );
 
   const safeName = (cv.fullName || "cv")

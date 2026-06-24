@@ -118,16 +118,16 @@ export default function AdminUsersPage() {
 
   const getRoleBadge = (role: string) => {
     if (role === "admin") {
-      return { label: "Administrateur", color: "bg-purple-100 text-purple-700 border-purple-200", icon: Shield };
+      return { label: "Administrateur", color: "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/20", icon: Shield };
     }
-    return { label: "Utilisateur", color: "bg-blue-100 text-blue-700 border-blue-200", icon: UserCheck };
+    return { label: "Utilisateur", color: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20", icon: UserCheck };
   };
 
   const getStatusBadge = (isActive: boolean = true) => {
     if (isActive) {
-      return { label: "Actif", color: "bg-green-100 text-green-700 border-green-200", icon: CheckCircle };
+      return { label: "Actif", color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", icon: CheckCircle };
     }
-    return { label: "Inactif", color: "bg-red-100 text-red-700 border-red-200", icon: XCircle };
+    return { label: "Inactif", color: "bg-red-500/10 text-red-400 border-red-500/20", icon: XCircle };
   };
 
   const formatDate = (date?: string) => {
@@ -150,60 +150,60 @@ export default function AdminUsersPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">
           Gestion des utilisateurs
         </h1>
-        <p className="text-gray-600 mt-2">Gérez les comptes utilisateurs de la plateforme</p>
+        <p className="text-slate-400 mt-2">Gérez les comptes utilisateurs de la plateforme</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total utilisateurs</p>
-              <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+              <p className="text-sm text-slate-400">Total utilisateurs</p>
+              <p className="text-2xl font-bold text-white">{users.length}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+              <Users className="w-5 h-5 text-indigo-400" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Administrateurs</p>
-              <p className="text-2xl font-bold text-purple-600">{users.filter(u => u.role === "admin").length}</p>
+              <p className="text-sm text-slate-400">Administrateurs</p>
+              <p className="text-2xl font-bold text-fuchsia-400">{users.filter(u => u.role === "admin").length}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-purple-600" />
+            <div className="w-10 h-10 rounded-lg bg-fuchsia-500/20 flex items-center justify-center">
+              <Shield className="w-5 h-5 text-fuchsia-400" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Utilisateurs actifs</p>
-              <p className="text-2xl font-bold text-green-600">{users.filter(u => u.isActive !== false).length}</p>
+              <p className="text-sm text-slate-400">Utilisateurs actifs</p>
+              <p className="text-2xl font-bold text-emerald-400">{users.filter(u => u.isActive !== false).length}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-              <UserCheck className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+              <UserCheck className="w-5 h-5 text-emerald-400" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4">
+      <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
             <input
               type="text"
               placeholder="Rechercher par nom, email ou téléphone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950/50 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
             />
           </div>
 
@@ -211,7 +211,7 @@ export default function AdminUsersPage() {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value as any)}
-              className="px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="px-4 py-2 rounded-xl bg-slate-950/50 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
             >
               <option value="all">Tous les rôles</option>
               <option value="admin">Administrateurs</option>
@@ -221,7 +221,7 @@ export default function AdminUsersPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="px-4 py-2 rounded-xl bg-slate-950/50 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
             >
               <option value="all">Tous les statuts</option>
               <option value="active">Actifs</option>
@@ -230,7 +230,7 @@ export default function AdminUsersPage() {
 
             <button
               onClick={load}
-              className="px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all"
+              className="px-4 py-2 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-all"
               title="Rafraîchir"
             >
               <RefreshCw className="w-5 h-5" />
@@ -243,61 +243,61 @@ export default function AdminUsersPage() {
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-500">Chargement des utilisateurs...</p>
+            <div className="w-16 h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-500">Chargement des utilisateurs...</p>
           </div>
         </div>
       ) : filteredUsers.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
-          <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-            <Users className="w-10 h-10 text-gray-400" />
+        <div className="bg-slate-900/50 rounded-2xl shadow-lg border border-white/10 p-12 text-center">
+          <div className="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4">
+            <Users className="w-10 h-10 text-slate-500" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucun utilisateur trouvé</h3>
-          <p className="text-gray-500">
+          <h3 className="text-lg font-semibold text-white mb-2">Aucun utilisateur trouvé</h3>
+          <p className="text-slate-400">
             {searchTerm || roleFilter !== "all" || statusFilter !== "all"
               ? "Aucun utilisateur ne correspond à vos critères"
               : "Aucun utilisateur n'est encore inscrit"}
           </p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gradient-to-r from-gray-50 to-blue-50/30 border-b border-gray-200">
+              <thead className="bg-slate-900/80 border-b border-white/10">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Utilisateur</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Contact</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Rôle</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Statut</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Inscrit le</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Utilisateur</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Contact</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Rôle</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Statut</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Inscrit le</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-white/10">
                 {filteredUsers.map((user) => {
                   const RoleBadge = getRoleBadge(user.role);
                   const StatusBadge = getStatusBadge(user.isActive);
                   const ContactIcon = getContactType(user.emailOrPhone).icon;
 
                   return (
-                    <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={user._id} className="hover:bg-white/5 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-semibold">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-600 flex items-center justify-center text-white font-semibold shadow-md">
                             {user.fullName ? user.fullName.charAt(0).toUpperCase() : user.emailOrPhone.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">{user.fullName || "Nom non défini"}</p>
+                            <p className="font-medium text-white">{user.fullName || "Nom non défini"}</p>
                             {user.cvsCount !== undefined && (
-                              <p className="text-xs text-gray-500">{user.cvsCount} CV créés</p>
+                              <p className="text-xs text-slate-400">{user.cvsCount} CV créés</p>
                             )}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <ContactIcon className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-600">{user.emailOrPhone}</span>
+                          <ContactIcon className="w-4 h-4 text-slate-500" />
+                          <span className="text-sm text-slate-300">{user.emailOrPhone}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -313,7 +313,7 @@ export default function AdminUsersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                        <div className="flex items-center gap-1.5 text-sm text-slate-400">
                           <Calendar className="w-3.5 h-3.5" />
                           {formatDate(user.createdAt)}
                         </div>
@@ -323,8 +323,8 @@ export default function AdminUsersPage() {
                           <button
                             onClick={() => toggleUserStatus(user._id, user.isActive !== false)}
                             className={`p-2 rounded-lg transition-all ${user.isActive !== false
-                                ? "text-red-600 hover:bg-red-50"
-                                : "text-green-600 hover:bg-green-50"
+                                ? "text-red-400 hover:bg-white/5"
+                                : "text-emerald-400 hover:bg-white/5"
                               }`}
                             title={user.isActive !== false ? "Désactiver" : "Activer"}
                           >
@@ -333,11 +333,11 @@ export default function AdminUsersPage() {
                           <button
                             onClick={() => setShowConfirmModal(user._id)}
                             disabled={deletingId === user._id}
-                            className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-all disabled:opacity-50"
+                            className="p-2 rounded-lg text-red-400 hover:bg-white/5 transition-all disabled:opacity-50"
                             title="Supprimer"
                           >
                             {deletingId === user._id ? (
-                              <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                              <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
                             ) : (
                               <Trash2 className="w-4 h-4" />
                             )}
@@ -355,31 +355,31 @@ export default function AdminUsersPage() {
 
       {/* Confirm Delete Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 animate-in zoom-in-95 duration-200">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-red-600" />
+              <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
+                <AlertCircle className="w-6 h-6 text-red-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Confirmer la suppression</h3>
-                <p className="text-sm text-gray-500">Cette action est irréversible</p>
+                <h3 className="text-lg font-semibold text-white">Confirmer la suppression</h3>
+                <p className="text-sm text-slate-400">Cette action est irréversible</p>
               </div>
             </div>
-            <p className="text-gray-600 mb-6">
+            <p className="text-slate-300 mb-6">
               Êtes-vous sûr de vouloir supprimer définitivement cet utilisateur ?
               Toutes ses données seront perdues.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowConfirmModal(null)}
-                className="flex-1 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-colors"
               >
                 Annuler
               </button>
               <button
                 onClick={() => removeUser(showConfirmModal)}
-                className="flex-1 px-4 py-2 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-colors"
+                className="flex-1 px-4 py-2 rounded-xl bg-red-500/20 text-red-400 font-bold border border-red-500/20 hover:bg-red-500/30 transition-colors"
               >
                 Supprimer
               </button>

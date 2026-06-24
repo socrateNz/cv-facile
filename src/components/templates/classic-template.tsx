@@ -12,14 +12,14 @@ export function ClassicTemplate({ cv }: TemplateProps) {
   const lastName = rest.join(" ");
 
   return (
-    <div className="p-8 max-w-4xl mx-auto font-serif text-gray-900 bg-white">
+    <div className="p-8 max-w-4xl mx-auto font-serif text-gray-900 bg-white text-[11pt]">
       <div className="border-b-2 border-gray-900 pb-6 mb-6">
-        <h1 className="text-4xl font-bold text-gray-900">
+        <h1 className="text-[28pt] leading-none font-bold text-gray-900">
           {firstName || "Prénom"} {lastName || "Nom"}
         </h1>
-        <p className="text-xl text-gray-600 mt-1">{cv.title || "Titre professionnel"}</p>
+        <p className="text-[16pt] text-gray-600 mt-2">{cv.title || "Titre professionnel"}</p>
 
-        <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-700">
+        <div className="flex flex-wrap gap-4 mt-4 text-[10pt] text-gray-700">
           {cv.email && (
             <div className="flex items-center gap-2">
               <Mail className="w-4 h-4" />
@@ -40,29 +40,29 @@ export function ClassicTemplate({ cv }: TemplateProps) {
       </div>
 
       {cv.summary && (
-        <div className="mb-8">
-          <p className="text-gray-700 leading-relaxed">{cv.summary}</p>
+        <div className="mb-8 break-inside-avoid">
+          <p className="text-gray-700 leading-relaxed text-[11pt]">{cv.summary}</p>
         </div>
       )}
 
       {cv.experiences.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-4">
+          <h2 className="text-[18pt] font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-4">
             Expériences Professionnelles
           </h2>
           <div className="space-y-6">
             {cv.experiences.map((exp, idx) => (
-              <div key={`${exp.company}-${idx}`}>
+              <div key={`${exp.company}-${idx}`} className="break-inside-avoid">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">{exp.role || "Poste"}</h3>
-                    <p className="text-gray-600 font-semibold">{exp.company || "Entreprise"}</p>
+                    <h3 className="text-[14pt] font-bold text-gray-900">{exp.role || "Poste"}</h3>
+                    <p className="text-[12pt] text-gray-600 font-semibold">{exp.company || "Entreprise"}</p>
                   </div>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-[10pt] text-gray-500 mt-1">
                     {exp.startDate || "Début"} - {exp.endDate || "Fin"}
                   </span>
                 </div>
-                <p className="text-gray-700 mt-2 leading-relaxed">{exp.summary}</p>
+                <p className="text-gray-700 mt-2 leading-relaxed text-[11pt]">{exp.summary}</p>
               </div>
             ))}
           </div>
@@ -71,18 +71,18 @@ export function ClassicTemplate({ cv }: TemplateProps) {
 
       {cv.education.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-4">
+          <h2 className="text-[18pt] font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-4">
             Formation
           </h2>
           <div className="space-y-4">
             {cv.education.map((edu, idx) => (
-              <div key={`${edu.school}-${idx}`}>
+              <div key={`${edu.school}-${idx}`} className="break-inside-avoid">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">{edu.degree || "Diplôme"}</h3>
-                    <p className="text-gray-600">{edu.school || "Établissement"}</p>
+                    <h3 className="text-[14pt] font-bold text-gray-900">{edu.degree || "Diplôme"}</h3>
+                    <p className="text-[12pt] text-gray-600">{edu.school || "Établissement"}</p>
                   </div>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-[10pt] text-gray-500 mt-1">
                     {edu.startDate || "Début"} - {edu.endDate || "Fin"}
                   </span>
                 </div>
@@ -93,11 +93,11 @@ export function ClassicTemplate({ cv }: TemplateProps) {
       )}
 
       {cv.skills.length > 0 && (
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-4">Compétences</h2>
+        <div className="break-inside-avoid">
+          <h2 className="text-[18pt] font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-4">Compétences</h2>
           <div className="grid grid-cols-2 gap-4">
             {cv.skills.map((skill, idx) => (
-              <div key={`${skill}-${idx}`} className="text-gray-700">
+              <div key={`${skill}-${idx}`} className="text-gray-700 text-[11pt] break-inside-avoid">
                 <p className="font-semibold">{skill}</p>
               </div>
             ))}

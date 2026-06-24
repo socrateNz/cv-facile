@@ -10,6 +10,7 @@ import { createNotchPayTransaction, detectPaymentMethod } from "@/lib/notchpay";
 import { paymentInitiateSchema } from "@/lib/validators";
 import { auditEvent } from "@/lib/audit";
 import { log, maskReference } from "@/lib/logger";
+import { getSiteSettings } from "@/lib/settings";
 
 const RATE_LIMIT_MAP = new Map<string, { count: number; resetAt: number }>();
 
@@ -35,6 +36,8 @@ export async function POST(req: NextRequest) {
   const session = getSessionUser(req);
   const guestId = session ? getGuestId(req) || getOrCreateGuestId(req) : getOrCreateGuestId(req);
   const body = await req.json();
+  const settings = await getSiteSettings();
+  const paymentAmount = settings?.payment.paymentAmount || 500;
 
   const validation = paymentInitiateSchema.safeParse(body);
   if (!validation.success) {
@@ -94,7 +97,7 @@ export async function POST(req: NextRequest) {
       userId: session?.userId ?? null,
       guestId: session ? guestId : guestId,
       cvId,
-      amount: 500,
+      amount: paymentAmount,
       status: "pending",
       reference,
       paymentPhone,
@@ -108,7 +111,7 @@ export async function POST(req: NextRequest) {
 
     try {
       const transaction = await createNotchPayTransaction({
-        amount: 500,
+        amount: paymentAmount,
         reference,
         customer,
         paymentPhone,

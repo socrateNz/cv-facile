@@ -106,10 +106,10 @@ export default function AdminPaymentsPage() {
 
   const getStatusBadge = (status: Payment["status"]) => {
     const statusConfig = {
-      completed: { label: "Payé", color: "bg-green-100 text-green-700 border-green-200", icon: CheckCircle },
-      pending: { label: "En attente", color: "bg-amber-100 text-amber-700 border-amber-200", icon: Clock },
-      failed: { label: "Échoué", color: "bg-red-100 text-red-700 border-red-200", icon: XCircle },
-      canceled: { label: "Annulé", color: "bg-gray-100 text-gray-700 border-gray-200", icon: XCircle }
+      completed: { label: "Payé", color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", icon: CheckCircle },
+      pending: { label: "En attente", color: "bg-amber-500/10 text-amber-400 border-amber-500/20", icon: Clock },
+      failed: { label: "Échoué", color: "bg-red-500/10 text-red-400 border-red-500/20", icon: XCircle },
+      canceled: { label: "Annulé", color: "bg-slate-500/10 text-slate-400 border-white/10", icon: XCircle }
     };
     return statusConfig[status] || statusConfig.pending;
   };
@@ -133,74 +133,74 @@ export default function AdminPaymentsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">
           Gestion des paiements
         </h1>
-        <p className="text-gray-600 mt-2">Suivez et gérez les transactions NotchPay</p>
+        <p className="text-slate-400 mt-2">Suivez et gérez les transactions NotchPay</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total transactions</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+              <p className="text-sm text-slate-400">Total transactions</p>
+              <p className="text-2xl font-bold text-white">{stats.total}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+              <CreditCard className="w-5 h-5 text-indigo-400" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Paiements réussis</p>
-              <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
+              <p className="text-sm text-slate-400">Paiements réussis</p>
+              <p className="text-2xl font-bold text-emerald-400">{stats.completed}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 text-emerald-400" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">En attente</p>
-              <p className="text-2xl font-bold text-amber-600">{stats.pending}</p>
+              <p className="text-sm text-slate-400">En attente</p>
+              <p className="text-2xl font-bold text-amber-400">{stats.pending}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-              <Clock className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
+              <Clock className="w-5 h-5 text-amber-400" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Revenu total</p>
-              <p className="text-2xl font-bold text-purple-600">{formatAmount(stats.totalAmount)}</p>
+              <p className="text-sm text-slate-400">Revenu total</p>
+              <p className="text-2xl font-bold text-fuchsia-400">{formatAmount(stats.totalAmount)}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-purple-600" />
+            <div className="w-10 h-10 rounded-lg bg-fuchsia-500/20 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-fuchsia-400" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4">
+      <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
             <input
               type="text"
               placeholder="Rechercher par référence ou client..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950/50 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
             />
           </div>
 
@@ -208,7 +208,7 @@ export default function AdminPaymentsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="px-4 py-2 rounded-xl bg-slate-950/50 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
             >
               <option value="all">Tous les statuts</option>
               <option value="completed">Payés</option>
@@ -220,7 +220,7 @@ export default function AdminPaymentsPage() {
             <button
               onClick={syncPayments}
               disabled={isSyncing}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium hover:shadow-lg transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 text-white font-bold hover:shadow-lg hover:shadow-indigo-500/20 transition-all disabled:opacity-50"
             >
               {isSyncing ? (
                 <>
@@ -240,19 +240,19 @@ export default function AdminPaymentsPage() {
 
       {/* Sync Results */}
       {syncResult && (
-        <div className="rounded-xl bg-green-50 border border-green-200 p-4 animate-in slide-in-from-top-1">
+        <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-4 animate-in slide-in-from-top-1">
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-green-600" />
-            <p className="text-sm text-green-700">{syncResult}</p>
+            <CheckCircle className="w-5 h-5 text-emerald-400" />
+            <p className="text-sm text-emerald-300">{syncResult}</p>
           </div>
         </div>
       )}
 
       {syncError && (
-        <div className="rounded-xl bg-red-50 border border-red-200 p-4 animate-in slide-in-from-top-1">
+        <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 animate-in slide-in-from-top-1">
           <div className="flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-red-600" />
-            <p className="text-sm text-red-700">{syncError}</p>
+            <AlertCircle className="w-5 h-5 text-red-400" />
+            <p className="text-sm text-red-300">{syncError}</p>
           </div>
         </div>
       )}
@@ -261,59 +261,59 @@ export default function AdminPaymentsPage() {
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-500">Chargement des paiements...</p>
+            <div className="w-16 h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-500">Chargement des paiements...</p>
           </div>
         </div>
       ) : filteredPayments.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
-          <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-            <CreditCard className="w-10 h-10 text-gray-400" />
+        <div className="bg-slate-900/50 rounded-2xl shadow-lg border border-white/10 p-12 text-center">
+          <div className="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4">
+            <CreditCard className="w-10 h-10 text-slate-500" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucun paiement trouvé</h3>
-          <p className="text-gray-500">
+          <h3 className="text-lg font-semibold text-white mb-2">Aucun paiement trouvé</h3>
+          <p className="text-slate-400">
             {searchTerm || statusFilter !== "all"
               ? "Aucun paiement ne correspond à vos critères"
               : "Aucune transaction n'a encore été effectuée"}
           </p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gradient-to-r from-gray-50 to-blue-50/30 border-b border-gray-200">
+              <thead className="bg-slate-900/80 border-b border-white/10">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Référence</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Client</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Montant</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Statut</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Référence</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Client</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Montant</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Statut</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Date</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-white/10">
                 {filteredPayments.map((payment) => {
                   const StatusBadge = getStatusBadge(payment.status);
 
                   return (
-                    <tr key={payment._id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={payment._id} className="hover:bg-white/5 transition-colors">
                       <td className="px-6 py-4">
-                        <code className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                        <code className="text-xs font-mono bg-slate-950 px-2 py-1 rounded text-slate-300 border border-white/5">
                           {payment.reference}
                         </code>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-600 flex items-center justify-center text-white text-xs font-bold shadow-md">
                             {payment.customer ? payment.customer.charAt(0).toUpperCase() : "U"}
                           </div>
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-slate-300">
                             {payment.customer || "Client inconnu"}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-semibold text-gray-900">
+                        <span className="font-semibold text-white">
                           {formatAmount(payment.amount)}
                         </span>
                       </td>
@@ -324,7 +324,7 @@ export default function AdminPaymentsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                        <div className="flex items-center gap-1.5 text-sm text-slate-400">
                           <Calendar className="w-3.5 h-3.5" />
                           {formatDate(payment.createdAt)}
                         </div>
@@ -335,7 +335,7 @@ export default function AdminPaymentsPage() {
                             <Link
                               href={`/preview?cvId=${payment.cvId}`}
                               target="_blank"
-                              className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-all"
+                              className="p-2 rounded-lg text-indigo-400 hover:bg-white/5 transition-all"
                               title="Voir le CV"
                             >
                               <Eye className="w-4 h-4" />
@@ -346,7 +346,7 @@ export default function AdminPaymentsPage() {
                               navigator.clipboard.writeText(payment.reference);
                               // Optionnel: ajouter un toast de notification
                             }}
-                            className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-all"
+                            className="p-2 rounded-lg text-slate-400 hover:bg-white/5 transition-all"
                             title="Copier la référence"
                           >
                             <CreditCard className="w-4 h-4" />
@@ -364,11 +364,11 @@ export default function AdminPaymentsPage() {
 
       {/* Export Section */}
       {payments.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-4">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h3 className="font-semibold text-gray-900">Exporter les données</h3>
-              <p className="text-sm text-gray-500">Téléchargez l'historique des transactions</p>
+              <h3 className="font-semibold text-white">Exporter les données</h3>
+              <p className="text-sm text-slate-400">Téléchargez l'historique des transactions</p>
             </div>
             <div className="flex gap-2">
               <button
@@ -392,7 +392,7 @@ export default function AdminPaymentsPage() {
                   a.click();
                   URL.revokeObjectURL(url);
                 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-all"
               >
                 <Download className="w-4 h-4" />
                 Exporter CSV

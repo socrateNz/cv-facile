@@ -16,14 +16,14 @@ function getAppBaseUrl() {
  */
 export async function generateCvPdfBuffer(
   cv: CVDocument,
-  options?: { cvId?: string; authToken?: string; guestId?: string },
+  options?: { cvId?: string; authToken?: string; guestId?: string; baseUrl?: string },
 ) {
   const cvId = options?.cvId || cv._id;
   if (cvId && (options?.authToken || options?.guestId)) {
     return generateCvPdfFromPrintPage(String(cvId), {
       authToken: options.authToken || "",
       guestId: options.guestId || "",
-    });
+    }, options.baseUrl);
   }
 
   // Fallback HTML simple si pas d'id (ne devrait pas arriver en prod)
@@ -33,8 +33,9 @@ export async function generateCvPdfBuffer(
 async function generateCvPdfFromPrintPage(
   cvId: string,
   cookies: { authToken: string; guestId: string },
+  baseUrlFallback?: string
 ) {
-  const baseUrl = getAppBaseUrl();
+  const baseUrl = baseUrlFallback || getAppBaseUrl();
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],

@@ -59,6 +59,8 @@ type Props = {
   existingCvId?: string;
   initialStep?: number;
   openPaymentOnLoad?: boolean;
+  paymentAmount?: number;
+  paymentCurrency?: string;
 };
 
 export function CVBuilder({
@@ -66,6 +68,8 @@ export function CVBuilder({
   existingCvId = "",
   initialStep = 0,
   openPaymentOnLoad = false,
+  paymentAmount = 500,
+  paymentCurrency = "XAF",
 }: Props) {
   const [cv, setCv] = useState<CVDocument>({
     ...defaultCV,
@@ -264,22 +268,15 @@ export function CVBuilder({
   const StepIcon = steps[currentStep].icon;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30">
-      <div className="mx-auto max-w-7xl px-4 py-8">
+    <div className="relative w-full">
+      <div className="mx-auto max-w-7xl px-0 py-0">
         {/* Header avec progression */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Créateur de CV
-              </h1>
-              <p className="text-gray-600 mt-1">
-                Remplissez vos informations en toute simplicité
-              </p>
-            </div>
+          <div className="flex items-center justify-end mb-6">
+
             <button
               onClick={saveCV}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all duration-200 shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-200 hover:bg-white/10 hover:text-white transition-all duration-200 shadow-sm"
             >
               {isSaving ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -292,7 +289,7 @@ export function CVBuilder({
 
           {/* Steps */}
           <div className="relative">
-            <div className="absolute top-5 left-0 right-0 h-0.5 bg-gray-200" />
+            <div className="absolute top-5 left-0 right-0 h-0.5 bg-white/10" />
             <div className="relative flex justify-between">
               {steps.map((step, idx) => {
                 const Icon = step.icon;
@@ -310,10 +307,10 @@ export function CVBuilder({
                       relative z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
                       ${
                         isActive
-                          ? "bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg scale-110"
+                          ? "bg-gradient-to-r from-indigo-500 to-purple-600 shadow-[0_0_20px_rgba(99,102,241,0.5)] scale-110 border border-white/20"
                           : isCompleted
-                            ? "bg-green-500"
-                            : "bg-white border-2 border-gray-300 hover:border-blue-400"
+                            ? "bg-emerald-500 border border-white/20"
+                            : "bg-slate-900 border-2 border-white/10 hover:border-indigo-400"
                       }
                     `}
                     >
@@ -321,17 +318,17 @@ export function CVBuilder({
                         <Check className="w-5 h-5 text-white" />
                       ) : (
                         <Icon
-                          className={`w-5 h-5 ${isActive ? "text-white" : "text-gray-400 group-hover:text-blue-500"}`}
+                          className={`w-5 h-5 ${isActive ? "text-white" : "text-slate-500 group-hover:text-indigo-400"}`}
                         />
                       )}
                     </div>
                     <span
                       className={`text-xs font-medium transition-colors duration-200 ${
                         isActive
-                          ? "text-blue-600"
+                          ? "text-indigo-400"
                           : isCompleted
-                            ? "text-green-600"
-                            : "text-gray-500"
+                            ? "text-emerald-400"
+                            : "text-slate-500"
                       }`}
                     >
                       {step.label}
@@ -346,8 +343,8 @@ export function CVBuilder({
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Formulaire */}
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4">
+            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-600/50 to-purple-600/50 backdrop-blur-md px-6 py-4 border-b border-white/10">
                 <div className="flex items-center gap-3">
                   <StepIcon className="w-5 h-5 text-white" />
                   <h2 className="text-white font-semibold">
@@ -360,9 +357,9 @@ export function CVBuilder({
                 {currentStep === 0 && (
                   <>
                     <div className="relative">
-                      <UserCircle className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                      <UserCircle className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
                       <input
-                        className="w-full rounded-xl border border-gray-200 pl-10 pr-4 py-3 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+                        className="w-full rounded-xl bg-slate-950/50 border border-white/10 pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
                         placeholder="Nom complet"
                         value={cv.fullName}
                         onChange={(e) =>
@@ -371,9 +368,9 @@ export function CVBuilder({
                       />
                     </div>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                      <Mail className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
                       <input
-                        className="w-full rounded-xl border border-gray-200 pl-10 pr-4 py-3 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+                        className="w-full rounded-xl bg-slate-950/50 border border-white/10 pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
                         placeholder="Email (obligatoire)"
                         type="email"
                         value={cv.email}
@@ -383,9 +380,9 @@ export function CVBuilder({
                       />
                     </div>
                     <div className="relative">
-                      <Phone className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                      <Phone className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
                       <input
-                        className="w-full rounded-xl border border-gray-200 pl-10 pr-4 py-3 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+                        className="w-full rounded-xl bg-slate-950/50 border border-white/10 pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
                         placeholder="Numéro de téléphone (ex: +237 6XX XXX XXX)"
                         type="tel"
                         value={cv.phone || ""}
@@ -395,9 +392,9 @@ export function CVBuilder({
                       />
                     </div>
                     <div className="relative">
-                      <Briefcase className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                      <Briefcase className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
                       <input
-                        className="w-full rounded-xl border border-gray-200 pl-10 pr-4 py-3 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+                        className="w-full rounded-xl bg-slate-950/50 border border-white/10 pl-10 pr-4 py-3 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
                         placeholder="Titre professionnel"
                         value={cv.title}
                         onChange={(e) =>
@@ -410,7 +407,7 @@ export function CVBuilder({
 
                 {currentStep === 1 && (
                   <textarea
-                    className="w-full rounded-xl border border-gray-200 p-3 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+                    className="w-full rounded-xl bg-slate-950/50 border border-white/10 p-3 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
                     placeholder="Décrivez votre parcours, vos forces et vos objectifs..."
                     rows={8}
                     value={cv.summary}
@@ -424,7 +421,7 @@ export function CVBuilder({
                       {cv.experiences.map((exp, idx) => (
                         <div
                           key={`exp-${idx}`}
-                          className="relative rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all duration-200 group"
+                          className="relative rounded-xl bg-slate-900/50 border border-white/10 p-4 hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:bg-slate-900/80 transition-all duration-200 group"
                         >
                           <button
                             type="button"
@@ -442,7 +439,7 @@ export function CVBuilder({
                           </button>
                           <div className="space-y-3">
                             <input
-                              className="w-full rounded-lg border border-gray-200 p-2 text-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                              className="w-full rounded-lg bg-slate-950/50 border border-white/10 p-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                               placeholder="Entreprise"
                               value={exp.company}
                               onChange={(e) =>
@@ -458,7 +455,7 @@ export function CVBuilder({
                               }
                             />
                             <input
-                              className="w-full rounded-lg border border-gray-200 p-2 text-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                              className="w-full rounded-lg bg-slate-950/50 border border-white/10 p-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                               placeholder="Poste"
                               value={exp.role}
                               onChange={(e) =>
@@ -475,7 +472,7 @@ export function CVBuilder({
                             />
                             <div className="grid grid-cols-2 gap-2">
                               <input
-                                className="w-full rounded-lg border border-gray-200 p-2 text-sm"
+                                className="w-full rounded-lg bg-slate-950/50 border border-white/10 p-2 text-sm text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                                 type="month"
                                 placeholder="Début"
                                 value={exp.startDate}
@@ -495,7 +492,7 @@ export function CVBuilder({
                                 }
                               />
                               <input
-                                className="w-full rounded-lg border border-gray-200 p-2 text-sm"
+                                className="w-full rounded-lg bg-slate-950/50 border border-white/10 p-2 text-sm text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                                 type="month"
                                 placeholder="Fin"
                                 value={exp.endDate}
@@ -513,7 +510,7 @@ export function CVBuilder({
                               />
                             </div>
                             <textarea
-                              className="w-full rounded-lg border border-gray-200 p-2 text-sm"
+                              className="w-full rounded-lg bg-slate-950/50 border border-white/10 p-2 text-sm text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                               placeholder="Description"
                               rows={2}
                               value={exp.summary}
@@ -638,7 +635,7 @@ export function CVBuilder({
                       {cv.education.map((edu, idx) => (
                         <div
                           key={`edu-${idx}`}
-                          className="relative rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all duration-200 group"
+                          className="relative rounded-xl bg-slate-900/50 border border-white/10 p-4 hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:bg-slate-900/80 transition-all duration-200 group"
                         >
                           <button
                             type="button"
@@ -689,7 +686,7 @@ export function CVBuilder({
                             />
                             <div className="grid grid-cols-2 gap-2">
                               <input
-                                className="w-full rounded-lg border border-gray-200 p-2 text-sm"
+                                className="w-full rounded-lg bg-slate-950/50 border border-white/10 p-2 text-sm text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                                 type="month"
                                 placeholder="Début"
                                 value={edu.startDate}
@@ -709,7 +706,7 @@ export function CVBuilder({
                                 }
                               />
                               <input
-                                className="w-full rounded-lg border border-gray-200 p-2 text-sm"
+                                className="w-full rounded-lg bg-slate-950/50 border border-white/10 p-2 text-sm text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                                 type="month"
                                 placeholder="Fin"
                                 value={edu.endDate}
@@ -758,11 +755,11 @@ export function CVBuilder({
                 {currentStep === 5 && (
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">
+                      <label className="text-sm font-medium text-slate-300">
                         Modèle de CV
                       </label>
                       <select
-                        className="w-full rounded-xl border border-gray-200 p-3 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+                        className="w-full rounded-xl bg-slate-950/50 border border-white/10 p-3 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
                         value={cv.template}
                         onChange={(e) =>
                           setCv({
@@ -780,7 +777,7 @@ export function CVBuilder({
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">
+                      <label className="text-sm font-medium text-slate-300">
                         Photo de profil
                       </label>
                       <div className="flex items-center gap-4">
@@ -801,7 +798,7 @@ export function CVBuilder({
                             </button>
                           </div>
                         ) : (
-                          <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
+                          <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 cursor-pointer hover:bg-white/5 transition-colors text-slate-300">
                             <Upload className="w-4 h-4" />
                             <span className="text-sm">Choisir une photo</span>
                             <input
@@ -821,7 +818,7 @@ export function CVBuilder({
                       </div>
                     </div>
 
-                    <p className="text-sm text-gray-500 text-center">
+                    <p className="text-sm text-slate-500 text-center">
                       L&apos;aperçu à droite se met à jour selon le modèle choisi.
                     </p>
                   </div>
@@ -830,10 +827,10 @@ export function CVBuilder({
                 {currentStep === 6 && (
                   <div className="space-y-6">
                     {paymentDone ? (
-                      <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 p-6 text-center space-y-4">
+                      <div className="rounded-2xl bg-slate-900/50 border border-emerald-500/30 p-6 text-center space-y-4 shadow-lg shadow-emerald-500/10">
                         <Check className="w-10 h-10 text-green-600 mx-auto" />
-                        <p className="font-bold text-green-800">Paiement confirmé</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="font-bold text-emerald-400">Paiement confirmé</p>
+                        <p className="text-sm text-slate-400">
                           Téléchargez votre CV en PDF (format A4).
                         </p>
                         <button
@@ -859,12 +856,12 @@ export function CVBuilder({
                         )}
                       </div>
                     ) : (
-                      <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 p-6 text-center space-y-4">
+                      <div className="rounded-2xl bg-slate-900/50 border border-indigo-500/30 p-6 text-center space-y-4 shadow-lg shadow-indigo-500/10">
                         <CreditCard className="w-12 h-12 text-blue-600 mx-auto" />
-                        <p className="font-semibold text-gray-900">
-                          Paiement Mobile Money — 500 FCFA
+                        <p className="font-bold text-white">
+                          Paiement Mobile Money — {paymentAmount} {paymentCurrency}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-slate-400">
                           MTN ou Orange Money. Le PDF sera disponible après
                           confirmation sur votre téléphone.
                         </p>
@@ -900,9 +897,9 @@ export function CVBuilder({
               </div>
 
               {/* Navigation Buttons */}
-              <div className="border-t border-gray-100 px-6 py-4 bg-gray-50/50 flex justify-between">
+              <div className="border-t border-white/10 px-6 py-4 bg-slate-950/50 flex justify-between">
                 <button
-                  className="flex items-center gap-2 rounded-xl border border-gray-200 px-6 py-2 text-gray-700 hover:bg-white hover:shadow-md transition-all duration-200 disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl border border-white/10 px-6 py-2 text-slate-300 hover:bg-white/5 hover:text-white transition-all duration-200 disabled:opacity-50"
                   disabled={currentStep === 0}
                   onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
                   type="button"
@@ -967,8 +964,8 @@ export function CVBuilder({
 
           {/* Preview */}
           <div className="lg:sticky lg:top-8 h-fit">
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-gray-800 to-gray-900 px-6 py-3">
+            <div className="bg-slate-900 rounded-2xl shadow-2xl border border-white/10 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+              <div className="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-3 border-b border-white/10">
                 <p className="text-white text-sm font-medium text-center">
                   Aperçu en temps réel
                 </p>
@@ -989,6 +986,8 @@ export function CVBuilder({
           setPaymentDone(true);
           setShowPaymentModal(false);
         }}
+        paymentAmount={paymentAmount}
+        paymentCurrency={paymentCurrency}
       />
 
       <Dialog
@@ -1010,15 +1009,15 @@ export function CVBuilder({
           width: 6px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f1f1;
+          background: transparent;
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
+          background: rgba(255,255,255,0.1);
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
+          background: rgba(255,255,255,0.2);
         }
       `}</style>
     </div>

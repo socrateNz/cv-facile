@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { detectPaymentMethod } from "@/lib/notchpay";
 
-const AMOUNT_FCFA = 500;
 
 type PaymentModalProps = {
   isOpen: boolean;
@@ -20,6 +19,8 @@ type PaymentModalProps = {
   customerEmail: string;
   defaultPhone?: string;
   onSuccess?: () => void;
+  paymentAmount?: number;
+  paymentCurrency?: string;
 };
 
 type Phase = "form" | "waiting" | "success" | "failed";
@@ -38,6 +39,8 @@ export function PaymentModal({
   customerEmail,
   defaultPhone = "",
   onSuccess,
+  paymentAmount = 500,
+  paymentCurrency = "XAF",
 }: PaymentModalProps) {
   const [paymentPhone, setPaymentPhone] = useState(defaultPhone);
   const [phase, setPhase] = useState<Phase>("form");
@@ -153,28 +156,28 @@ export function PaymentModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-md rounded-2xl bg-slate-900 border border-white/10 shadow-2xl overflow-hidden">
         <button
           type="button"
           onClick={() => {
             stopPolling();
             onClose();
           }}
-          className="absolute right-4 top-4 rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors z-10"
+          className="absolute right-4 top-4 rounded-lg p-1 text-slate-400 hover:bg-white/10 hover:text-white transition-colors z-10"
           aria-label="Fermer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-5 text-white">
+        <div className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 px-6 py-6 text-white border-b border-white/10">
           <div className="flex items-center gap-3">
             <CreditCard className="w-6 h-6" />
             <div>
               <h2 className="text-lg font-bold">Paiement sécurisé</h2>
-              <p className="text-sm text-blue-100">MTN • Orange Money</p>
+              <p className="text-sm text-indigo-200">MTN • Orange Money</p>
             </div>
           </div>
-          <p className="mt-4 text-3xl font-bold">{AMOUNT_FCFA} FCFA</p>
+          <p className="mt-4 text-3xl font-bold">{paymentAmount} {paymentCurrency}</p>
         </div>
 
         <div className="p-6 space-y-4">
@@ -190,11 +193,11 @@ export function PaymentModal({
               )}
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">
+                <label className="block text-xs font-medium text-slate-400 mb-1">
                   Numéro Mobile Money
                 </label>
                 <input
-                  className="w-full rounded-xl border border-gray-200 p-3 text-lg tracking-wide focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                  className="w-full rounded-xl bg-slate-950/50 border border-white/10 p-3 text-lg tracking-wide text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                   placeholder="6XX XXX XXX"
                   type="tel"
                   value={paymentPhone}
@@ -206,7 +209,7 @@ export function PaymentModal({
               </div>
 
               {error && (
-                <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2 border border-red-100">
+                <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-3 py-2 border border-red-500/20">
                   {error}
                 </p>
               )}
@@ -230,7 +233,7 @@ export function PaymentModal({
                 )}
               </button>
 
-              <p className="text-center text-xs text-gray-400">
+              <p className="text-center text-xs text-slate-500">
                 Une demande USSD sera envoyée à votre téléphone pour confirmer
               </p>
             </>
@@ -239,22 +242,22 @@ export function PaymentModal({
           {phase === "waiting" && (
             <div className="text-center space-y-4 py-2">
               <div className="relative flex items-center justify-center mx-auto w-20 h-20">
-                <div className="absolute w-20 h-20 rounded-full bg-blue-100 animate-pulse" />
-                <div className="absolute w-20 h-20 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
+                <div className="absolute w-20 h-20 rounded-full bg-indigo-500/20 animate-pulse" />
+                <div className="absolute w-20 h-20 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin" />
                 <span className="relative text-3xl">📱</span>
               </div>
-              <p className="font-semibold text-gray-900">
+              <p className="font-bold text-white">
                 Confirmation au{" "}
-                <span className="text-blue-600">{paymentPhone}</span>
+                <span className="text-indigo-400">{paymentPhone}</span>
               </p>
               {ussdMessage && (
-                <div className="p-3 bg-blue-50 text-blue-800 rounded-xl text-sm font-medium border border-blue-100">
+                <div className="p-3 bg-indigo-500/10 text-indigo-300 rounded-xl text-sm font-medium border border-indigo-500/20">
                   {ussdMessage.includes("*126#")
                     ? "Composez *126# sur votre téléphone"
                     : "Composez #150*50# sur votre téléphone"}
                 </div>
               )}
-              <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+              <div className="flex items-center justify-center gap-2 text-xs text-slate-400">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                 En attente de confirmation…
               </div>
@@ -264,7 +267,7 @@ export function PaymentModal({
                   stopPolling();
                   setPhase("form");
                 }}
-                className="text-xs text-gray-400 hover:text-gray-600 underline"
+                className="text-xs text-slate-500 hover:text-slate-300 underline"
               >
                 Annuler
               </button>
@@ -273,17 +276,17 @@ export function PaymentModal({
 
           {phase === "failed" && (
             <div className="text-center space-y-4 py-2">
-              <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto text-3xl">
+              <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto text-3xl">
                 ❌
               </div>
-              <p className="font-bold text-gray-900">Paiement échoué</p>
-              <p className="text-sm text-gray-500">
+              <p className="font-bold text-white">Paiement échoué</p>
+              <p className="text-sm text-slate-400">
                 La transaction a été annulée ou le délai est dépassé.
               </p>
               <button
                 type="button"
                 onClick={() => setPhase("form")}
-                className="w-full rounded-xl bg-red-50 py-3 text-red-600 font-semibold border border-red-200 hover:bg-red-100 transition-all"
+                className="w-full rounded-xl bg-red-500/10 py-3 text-red-400 font-bold border border-red-500/20 hover:bg-red-500/20 transition-all"
               >
                 Réessayer
               </button>
@@ -292,11 +295,11 @@ export function PaymentModal({
 
           {phase === "success" && (
             <div className="text-center space-y-4 py-2">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
-                <Check className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto">
+                <Check className="w-8 h-8 text-emerald-400" />
               </div>
-              <p className="font-bold text-green-800 text-lg">Paiement confirmé !</p>
-              <p className="text-sm text-green-600">Votre CV est prêt à télécharger</p>
+              <p className="font-bold text-emerald-400 text-lg">Paiement confirmé !</p>
+              <p className="text-sm text-emerald-500">Votre CV est prêt à télécharger</p>
               <a
                 href={`/api/cv/${cvId}/pdf`}
                 className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-3 text-white font-semibold hover:shadow-lg transition-all"

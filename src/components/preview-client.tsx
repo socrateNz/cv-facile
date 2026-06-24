@@ -23,7 +23,7 @@ import {
   Minimize2
 } from "lucide-react";
 
-export function PreviewClient({ cvId }: { cvId: string }) {
+export function PreviewClient({ cvId, paymentAmount = 500, paymentCurrency = "XAF" }: { cvId: string, paymentAmount?: number, paymentCurrency?: string }) {
   const router = useRouter();
   const [cv, setCv] = useState(defaultCV);
   const [resolvedCvId, setResolvedCvId] = useState(cvId);
@@ -140,14 +140,14 @@ export function PreviewClient({ cvId }: { cvId: string }) {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 flex items-center justify-center">
+      <main className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center">
           <div className="relative">
-            <div className="w-20 h-20 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <FileText className="w-8 h-8 text-blue-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+            <div className="w-20 h-20 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <FileText className="w-8 h-8 text-indigo-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
           </div>
-          <p className="text-gray-600 font-medium">Chargement de votre CV...</p>
-          <p className="text-sm text-gray-400 mt-1">Préparation de l'aperçu</p>
+          <p className="text-slate-300 font-medium">Chargement de votre CV...</p>
+          <p className="text-sm text-slate-500 mt-1">Préparation de l'aperçu</p>
         </div>
       </main>
     );
@@ -155,23 +155,23 @@ export function PreviewClient({ cvId }: { cvId: string }) {
 
   if (error) {
     return (
-      <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 flex items-center justify-center px-4">
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 max-w-md text-center">
-          <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-10 h-10 text-red-600" />
+      <main className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+        <div className="bg-slate-900 rounded-2xl shadow-2xl border border-white/10 p-8 max-w-md text-center">
+          <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-10 h-10 text-red-400" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Erreur</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <h2 className="text-2xl font-bold text-white mb-2">Erreur</h2>
+          <p className="text-slate-400 mb-6">{error}</p>
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => router.back()}
-              className="px-6 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-colors"
             >
               Retour
             </button>
             <Link
               href="/cv"
-              className="px-6 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium hover:shadow-lg transition-all"
+              className="px-6 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 text-white font-bold hover:shadow-lg hover:shadow-indigo-500/20 transition-all"
             >
               Créer un CV
             </Link>
@@ -182,26 +182,26 @@ export function PreviewClient({ cvId }: { cvId: string }) {
   }
 
   return (
-    <main className={`min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 ${isFullscreen ? 'p-0' : 'px-4 py-8'}`}>
+    <main className={`min-h-screen bg-slate-950 text-slate-200 ${isFullscreen ? 'p-0' : 'px-4 py-8'}`}>
       <div className={`mx-auto ${isFullscreen ? 'max-w-full' : 'max-w-5xl'} space-y-4`}>
 
         {/* Header avec actions */}
         {!isFullscreen && (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sticky top-4 z-10 backdrop-blur-sm bg-white/95">
+          <div className="bg-slate-900/50 rounded-2xl shadow-lg border border-white/10 p-4 sticky top-4 z-10 backdrop-blur-xl">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => router.back()}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all duration-200"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-all duration-200"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Retour
                 </button>
                 <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">
                     Aperçu du CV
                   </h1>
-                  <p className="text-sm text-gray-500 mt-0.5">
+                  <p className="text-sm text-slate-400 mt-0.5">
                     {cv.fullName || "CV sans nom"} • {cv.title || "Titre non défini"}
                   </p>
                 </div>
@@ -210,7 +210,7 @@ export function PreviewClient({ cvId }: { cvId: string }) {
               <div className="flex flex-wrap gap-2">
                 <Link
                   href={`/cv?cvId=${resolvedCvId || cvId}`}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all duration-200"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-all duration-200"
                 >
                   <Edit className="w-4 h-4" />
                   Modifier
@@ -235,13 +235,13 @@ export function PreviewClient({ cvId }: { cvId: string }) {
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-medium hover:shadow-lg transition-all duration-200"
                   >
                     <AlertCircle className="w-4 h-4" />
-                    Payer 500 FCFA
+                    Payer {paymentAmount} {paymentCurrency}
                   </Link>
                 )}
 
                 <button
                   onClick={toggleFullscreen}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all duration-200"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-all duration-200"
                 >
                   {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                   {isFullscreen ? "Réduire" : "Plein écran"}
@@ -261,17 +261,17 @@ export function PreviewClient({ cvId }: { cvId: string }) {
         )}
 
         {/* Aperçu du CV */}
-        <div className={`bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden transition-all duration-300 ${isFullscreen ? 'rounded-none' : ''
+        <div className={`bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-slate-800 overflow-hidden transition-all duration-300 ${isFullscreen ? 'rounded-none' : ''
           }`}>
-          <div className={`${!isFullscreen ? 'max-h-[80vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb:hover]:bg-gray-400' : ''}`}>
+          <div className={`${!isFullscreen ? 'max-h-[80vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-slate-900 [&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb:hover]:bg-slate-600' : ''}`}>
             <CVPreview cv={cv} />
           </div>
         </div>
 
         {/* Footer */}
         {!isFullscreen && (
-          <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
-            <p className="text-xs text-gray-500">
+          <div className="bg-slate-900/50 rounded-xl border border-white/10 p-4 text-center backdrop-blur-md">
+            <p className="text-xs text-slate-400">
               <Eye className="w-3 h-3 inline mr-1" />
               Aperçu en temps réel • Les modifications sont automatiquement sauvegardées
             </p>

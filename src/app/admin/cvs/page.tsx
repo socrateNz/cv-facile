@@ -129,28 +129,28 @@ export default function AdminCvsPage() {
 
   const getStatusBadge = (isPublished: boolean) => {
     if (isPublished) {
-      return { label: "Publié", color: "bg-green-100 text-green-700 border-green-200", icon: CheckCircle };
+      return { label: "Publié", color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", icon: CheckCircle };
     }
-    return { label: "Désactivé", color: "bg-red-100 text-red-700 border-red-200", icon: XCircle };
+    return { label: "Désactivé", color: "bg-red-500/10 text-red-400 border-red-500/20", icon: XCircle };
   };
 
   const getPaymentBadge = (isPaid: boolean = false) => {
     if (isPaid) {
-      return { label: "Payé", color: "bg-green-100 text-green-700 border-green-200", icon: CheckCircle };
+      return { label: "Payé", color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", icon: CheckCircle };
     }
-    return { label: "Non payé", color: "bg-amber-100 text-amber-700 border-amber-200", icon: AlertCircle };
+    return { label: "Non payé", color: "bg-amber-500/10 text-amber-400 border-amber-500/20", icon: AlertCircle };
   };
 
   const getTemplateBadge = (template?: string) => {
     const templates: Record<string, { label: string; color: string }> = {
-      modern: { label: "Modern", color: "bg-blue-100 text-blue-700 border-blue-200" },
-      classic: { label: "Classic", color: "bg-gray-100 text-gray-700 border-gray-200" },
-      compact: { label: "Premium", color: "bg-purple-100 text-purple-700 border-purple-200" },
-      premium: { label: "Premium", color: "bg-purple-100 text-purple-700 border-purple-200" }
+      modern: { label: "Modern", color: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20" },
+      classic: { label: "Classic", color: "bg-slate-500/10 text-slate-300 border-white/10" },
+      compact: { label: "Premium", color: "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/20" },
+      premium: { label: "Premium", color: "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/20" }
     };
 
     // Valeur par défaut si le template n'est pas reconnu
-    const defaultTemplate = { label: "Standard", color: "bg-gray-100 text-gray-700 border-gray-200" };
+    const defaultTemplate = { label: "Standard", color: "bg-slate-500/10 text-slate-300 border-white/10" };
     return templates[template || "modern"] || defaultTemplate;
   };
 
@@ -167,71 +167,71 @@ export default function AdminCvsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">
           Gestion des CV
         </h1>
-        <p className="text-gray-600 mt-2">Administrez les CV créés sur la plateforme</p>
+        <p className="text-slate-400 mt-2">Administrez les CV créés sur la plateforme</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total CV</p>
-              <p className="text-2xl font-bold text-gray-900">{cvs.length}</p>
+              <p className="text-sm text-slate-400">Total CV</p>
+              <p className="text-2xl font-bold text-white">{cvs.length}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-              <FileText className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-indigo-400" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Publiés</p>
-              <p className="text-2xl font-bold text-green-600">{cvs.filter(cv => cv.isPublished).length}</p>
+              <p className="text-sm text-slate-400">Publiés</p>
+              <p className="text-2xl font-bold text-emerald-400">{cvs.filter(cv => cv.isPublished).length}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-              <Eye className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+              <Eye className="w-5 h-5 text-emerald-400" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Désactivés</p>
-              <p className="text-2xl font-bold text-red-600">{cvs.filter(cv => !cv.isPublished).length}</p>
+              <p className="text-sm text-slate-400">Désactivés</p>
+              <p className="text-2xl font-bold text-red-400">{cvs.filter(cv => !cv.isPublished).length}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-              <EyeOff className="w-5 h-5 text-red-600" />
+            <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
+              <EyeOff className="w-5 h-5 text-red-400" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Payés</p>
-              <p className="text-2xl font-bold text-amber-600">{cvs.filter(cv => cv.isPaid).length}</p>
+              <p className="text-sm text-slate-400">Payés</p>
+              <p className="text-2xl font-bold text-amber-400">{cvs.filter(cv => cv.isPaid).length}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-              <Download className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
+              <Download className="w-5 h-5 text-amber-400" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4">
+      <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
             <input
               type="text"
               placeholder="Rechercher par nom, titre ou email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950/50 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
             />
           </div>
 
@@ -239,7 +239,7 @@ export default function AdminCvsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="px-4 py-2 rounded-xl bg-slate-950/50 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
             >
               <option value="all">Tous les statuts</option>
               <option value="published">Publiés</option>
@@ -249,7 +249,7 @@ export default function AdminCvsPage() {
             <select
               value={paymentFilter}
               onChange={(e) => setPaymentFilter(e.target.value as any)}
-              className="px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+              className="px-4 py-2 rounded-xl bg-slate-950/50 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
             >
               <option value="all">Tous les paiements</option>
               <option value="paid">Payés</option>
@@ -258,7 +258,7 @@ export default function AdminCvsPage() {
 
             <button
               onClick={load}
-              className="px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all"
+              className="px-4 py-2 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-all"
               title="Rafraîchir"
             >
               <RefreshCw className="w-5 h-5" />
@@ -271,55 +271,55 @@ export default function AdminCvsPage() {
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-500">Chargement des CV...</p>
+            <div className="w-16 h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-500">Chargement des CV...</p>
           </div>
         </div>
       ) : filteredCvs.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
-          <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-            <FileText className="w-10 h-10 text-gray-400" />
+        <div className="bg-slate-900/50 rounded-2xl shadow-lg border border-white/10 p-12 text-center">
+          <div className="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4">
+            <FileText className="w-10 h-10 text-slate-500" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucun CV trouvé</h3>
-          <p className="text-gray-500">
+          <h3 className="text-lg font-semibold text-white mb-2">Aucun CV trouvé</h3>
+          <p className="text-slate-400">
             {searchTerm || statusFilter !== "all" || paymentFilter !== "all"
               ? "Aucun CV ne correspond à vos critères"
               : "Aucun CV n'a encore été créé"}
           </p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-lg border border-white/10 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gradient-to-r from-gray-50 to-blue-50/30 border-b border-gray-200">
+              <thead className="bg-slate-900/80 border-b border-white/10">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">CV</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Propriétaire</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Template</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Statut</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Paiement</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Créé le</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">CV</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Propriétaire</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Template</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Statut</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Paiement</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Créé le</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-white/10">
                 {filteredCvs.map((cv) => {
                   const StatusBadge = getStatusBadge(cv.isPublished);
                   const PaymentBadge = getPaymentBadge(cv.isPaid);
                   const TemplateBadge = getTemplateBadge(cv.template);
 
                   return (
-                    <tr key={cv._id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={cv._id} className="hover:bg-white/5 transition-colors">
                       <td className="px-6 py-4">
                         <div>
-                          <p className="font-medium text-gray-900">{cv.fullName || "Sans nom"}</p>
-                          <p className="text-sm text-gray-500 line-clamp-1">{cv.title || "Sans titre"}</p>
+                          <p className="font-medium text-white">{cv.fullName || "Sans nom"}</p>
+                          <p className="text-sm text-slate-400 line-clamp-1">{cv.title || "Sans titre"}</p>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <User className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-600">
+                          <User className="w-4 h-4 text-slate-500" />
+                          <span className="text-sm text-slate-300">
                             {cv.userId?.fullName || cv.email || "N/A"}
                           </span>
                         </div>
@@ -343,7 +343,7 @@ export default function AdminCvsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                        <div className="flex items-center gap-1.5 text-sm text-slate-400">
                           <Calendar className="w-3.5 h-3.5" />
                           {formatDate(cv.createdAt)}
                         </div>
@@ -353,17 +353,25 @@ export default function AdminCvsPage() {
                           <Link
                             href={`/preview?cvId=${cv._id}`}
                             target="_blank"
-                            className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-all"
+                            className="p-2 rounded-lg text-indigo-400 hover:bg-white/5 transition-all"
                             title="Voir l'aperçu"
                           >
                             <Eye className="w-4 h-4" />
+                          </Link>
+                          <Link
+                            href={`/api/cv/${cv._id}/pdf`}
+                            target="_blank"
+                            className="p-2 rounded-lg text-emerald-400 hover:bg-white/5 transition-all"
+                            title="Télécharger PDF"
+                          >
+                            <Download className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => togglePublishStatus(cv._id, cv.isPublished)}
                             disabled={actionId === cv._id}
                             className={`p-2 rounded-lg transition-all ${cv.isPublished
-                                ? "text-red-600 hover:bg-red-50"
-                                : "text-green-600 hover:bg-green-50"
+                                ? "text-red-400 hover:bg-white/5"
+                                : "text-emerald-400 hover:bg-white/5"
                               } disabled:opacity-50`}
                             title={cv.isPublished ? "Désactiver" : "Activer"}
                           >
@@ -378,7 +386,7 @@ export default function AdminCvsPage() {
                           <button
                             onClick={() => setShowConfirmModal(cv._id)}
                             disabled={actionId === cv._id}
-                            className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-all disabled:opacity-50"
+                            className="p-2 rounded-lg text-red-400 hover:bg-white/5 transition-all disabled:opacity-50"
                             title="Supprimer"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -396,31 +404,31 @@ export default function AdminCvsPage() {
 
       {/* Confirm Delete Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 animate-in zoom-in-95 duration-200">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-red-600" />
+              <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
+                <AlertCircle className="w-6 h-6 text-red-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Confirmer la suppression</h3>
-                <p className="text-sm text-gray-500">Cette action est irréversible</p>
+                <h3 className="text-lg font-semibold text-white">Confirmer la suppression</h3>
+                <p className="text-sm text-slate-400">Cette action est irréversible</p>
               </div>
             </div>
-            <p className="text-gray-600 mb-6">
+            <p className="text-slate-300 mb-6">
               Êtes-vous sûr de vouloir supprimer définitivement ce CV ?
               Toutes les données associées seront perdues.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowConfirmModal(null)}
-                className="flex-1 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-colors"
               >
                 Annuler
               </button>
               <button
                 onClick={() => deleteCV(showConfirmModal)}
-                className="flex-1 px-4 py-2 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-colors"
+                className="flex-1 px-4 py-2 rounded-xl bg-red-500/20 text-red-400 font-bold border border-red-500/20 hover:bg-red-500/30 transition-colors"
               >
                 Supprimer
               </button>
