@@ -58,7 +58,7 @@ export function ClassicColumnsTemplate({ cv }: TemplateProps) {
           {cv.summary && (
             <div className="mb-8 break-inside-avoid">
               <h2 className="text-[14pt] font-bold border-b-2 border-gray-200 pb-2 mb-3">À PROPOS</h2>
-              <p className="text-[11pt] text-gray-700 leading-relaxed">{cv.summary}</p>
+              <p className="text-[11pt] text-gray-700 leading-relaxed whitespace-pre-wrap">{cv.summary}</p>
             </div>
           )}
 
@@ -75,7 +75,7 @@ export function ClassicColumnsTemplate({ cv }: TemplateProps) {
                       </div>
                       <span className="text-[10pt] text-gray-500">{exp.startDate} - {exp.endDate}</span>
                     </div>
-                    <p className="text-[11pt] text-gray-600 mt-2">{exp.summary}</p>
+                    <p className="text-[11pt] text-gray-600 mt-2 whitespace-pre-wrap">{exp.summary}</p>
                   </div>
                 ))}
               </div>

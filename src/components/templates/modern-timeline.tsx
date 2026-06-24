@@ -28,7 +28,7 @@ export function ModernTimelineTemplate({ cv }: TemplateProps) {
         <div className="p-8">
           {cv.summary && (
             <div className="mb-8 p-6 bg-gray-50 rounded-lg break-inside-avoid">
-              <p className="text-gray-700 italic leading-relaxed text-[11pt]">{cv.summary}</p>
+              <p className="text-gray-700 italic leading-relaxed text-[11pt] whitespace-pre-wrap">{cv.summary}</p>
             </div>
           )}
 
@@ -79,7 +79,7 @@ export function ModernTimelineTemplate({ cv }: TemplateProps) {
                             {exp.startDate} - {exp.endDate}
                           </span>
                         </div>
-                        <p className="text-[11pt] text-gray-600 mt-2">{exp.summary}</p>
+                        <p className="text-[11pt] text-gray-600 mt-2 whitespace-pre-wrap">{exp.summary}</p>
                       </div>
                     ))}
                   </div>

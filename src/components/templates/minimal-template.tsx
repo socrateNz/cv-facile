@@ -49,7 +49,7 @@ export function MinimalTemplate({ cv }: TemplateProps) {
             {cv.summary && (
               <div className="break-inside-avoid">
                 <h3 className="text-[12pt] font-semibold uppercase tracking-wider text-gray-400 mb-3">Profil</h3>
-                <p className="text-gray-700 leading-relaxed text-[11pt]">{cv.summary}</p>
+                <p className="text-gray-700 leading-relaxed text-[11pt] whitespace-pre-wrap">{cv.summary}</p>
               </div>
             )}
 
@@ -64,7 +64,7 @@ export function MinimalTemplate({ cv }: TemplateProps) {
                         <span className="text-[10pt] text-gray-500">{exp.startDate} - {exp.endDate}</span>
                       </div>
                       <p className="text-[12pt] text-gray-600 mt-1">{exp.company}</p>
-                      <p className="text-[11pt] text-gray-700 mt-2 leading-relaxed">{exp.summary}</p>
+                      <p className="text-[11pt] text-gray-700 mt-2 leading-relaxed whitespace-pre-wrap">{exp.summary}</p>
                     </div>
                   ))}
                 </div>

@@ -34,6 +34,7 @@ import { SaveAccountCta } from "@/components/save-account-cta";
 import { LOCAL_CV_KEY } from "@/lib/guest-constants";
 import { normalizeTemplate } from "@/lib/utils";
 import { TEMPLATE_IDS, templates } from "@/data/data";
+import { AIAssistantButton } from "@/components/ai-assistant-button";
 
 const experienceTips = [
   "J'ai piloté des projets avec un gain mesurable de performance.",
@@ -406,13 +407,23 @@ export function CVBuilder({
                 )}
 
                 {currentStep === 1 && (
-                  <textarea
-                    className="w-full rounded-xl bg-slate-950/50 border border-white/10 p-3 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
-                    placeholder="Décrivez votre parcours, vos forces et vos objectifs..."
-                    rows={8}
-                    value={cv.summary}
-                    onChange={(e) => setCv({ ...cv, summary: e.target.value })}
-                  />
+                  <div className="space-y-3">
+                    <div className="flex justify-end">
+                      <AIAssistantButton
+                        type="summary"
+                        context={`Titre: ${cv.title}\nNom: ${cv.fullName}`}
+                        currentText={cv.summary}
+                        onApply={(text) => setCv({ ...cv, summary: text })}
+                      />
+                    </div>
+                    <textarea
+                      className="w-full rounded-xl bg-slate-950/50 border border-white/10 p-3 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
+                      placeholder="Décrivez votre parcours, vos forces et vos objectifs..."
+                      rows={8}
+                      value={cv.summary}
+                      onChange={(e) => setCv({ ...cv, summary: e.target.value })}
+                    />
+                  </div>
                 )}
 
                 {currentStep === 2 && (
@@ -509,23 +520,40 @@ export function CVBuilder({
                                 }
                               />
                             </div>
-                            <textarea
-                              className="w-full rounded-lg bg-slate-950/50 border border-white/10 p-2 text-sm text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-                              placeholder="Description"
-                              rows={2}
-                              value={exp.summary}
-                              onChange={(e) =>
-                                setCv((prev) => ({
-                                  ...prev,
-                                  experiences: prev.experiences.map(
-                                    (item, itemIdx) =>
-                                      itemIdx === idx
-                                        ? { ...item, summary: e.target.value }
-                                        : item,
-                                  ),
-                                }))
-                              }
-                            />
+                            <div className="space-y-2">
+                              <div className="flex justify-end">
+                                <AIAssistantButton
+                                  type="experience"
+                                  context={`Entreprise: ${exp.company}\nPoste: ${exp.role}`}
+                                  currentText={exp.summary}
+                                  onApply={(text) =>
+                                    setCv((prev) => ({
+                                      ...prev,
+                                      experiences: prev.experiences.map((item, itemIdx) =>
+                                        itemIdx === idx ? { ...item, summary: text } : item
+                                      ),
+                                    }))
+                                  }
+                                />
+                              </div>
+                              <textarea
+                                className="w-full rounded-lg bg-slate-950/50 border border-white/10 p-2 text-sm text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+                                placeholder="Description"
+                                rows={2}
+                                value={exp.summary}
+                                onChange={(e) =>
+                                  setCv((prev) => ({
+                                    ...prev,
+                                    experiences: prev.experiences.map(
+                                      (item, itemIdx) =>
+                                        itemIdx === idx
+                                          ? { ...item, summary: e.target.value }
+                                          : item,
+                                    ),
+                                  }))
+                                }
+                              />
+                            </div>
                           </div>
                         </div>
                       ))}

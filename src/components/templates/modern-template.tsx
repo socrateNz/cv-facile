@@ -17,7 +17,7 @@ export function ModernTemplate({ cv }: TemplateProps) {
           <div className="flex-1 pt-2">
             <h1 className="text-[28pt] leading-none font-bold">{cv.fullName || "Nom complet"}</h1>
             <p className="text-[16pt] opacity-90 mt-2">{cv.title || "Titre professionnel"}</p>
-            <p className="mt-4 opacity-90 leading-relaxed max-w-2xl text-[11pt]">{cv.summary || "Résumé professionnel"}</p>
+            <p className="mt-4 opacity-90 leading-relaxed max-w-2xl text-[11pt] whitespace-pre-wrap">{cv.summary || "Résumé professionnel"}</p>
 
             <div className="flex flex-wrap gap-6 mt-6 text-[10pt]">
               {cv.email && (
@@ -61,7 +61,7 @@ export function ModernTemplate({ cv }: TemplateProps) {
                       {exp.startDate || "Début"} - {exp.endDate || "Fin"}
                     </span>
                   </div>
-                  <p className="text-gray-700 mt-3 leading-relaxed text-[11pt]">{exp.summary}</p>
+                  <p className="text-gray-700 mt-3 leading-relaxed text-[11pt] whitespace-pre-wrap">{exp.summary}</p>
                 </div>
               ))}
             </div>
