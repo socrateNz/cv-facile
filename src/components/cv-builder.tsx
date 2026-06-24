@@ -35,6 +35,7 @@ import { LOCAL_CV_KEY } from "@/lib/guest-constants";
 import { normalizeTemplate } from "@/lib/utils";
 import { TEMPLATE_IDS, templates } from "@/data/data";
 import { AIAssistantButton } from "@/components/ai-assistant-button";
+import { MagicImportButton } from "@/components/magic-import-button";
 
 const experienceTips = [
   "J'ai piloté des projets avec un gain mesurable de performance.",
@@ -273,8 +274,21 @@ export function CVBuilder({
       <div className="mx-auto max-w-7xl px-0 py-0">
         {/* Header avec progression */}
         <div className="mb-8">
-          <div className="flex items-center justify-end mb-6">
-
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <MagicImportButton
+                onImport={(data) => {
+                  setCv((prev) => ({
+                    ...prev,
+                    ...data,
+                    // S'assurer de conserver les champs qui ne seraient pas retournés ou qui doivent être fusionnés
+                    experiences: data.experiences?.length ? data.experiences : prev.experiences,
+                    education: data.education?.length ? data.education : prev.education,
+                    skills: data.skills?.length ? data.skills : prev.skills,
+                  }));
+                }}
+              />
+            </div>
             <button
               onClick={saveCV}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-200 hover:bg-white/10 hover:text-white transition-all duration-200 shadow-sm"

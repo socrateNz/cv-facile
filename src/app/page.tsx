@@ -19,7 +19,14 @@ import { getSiteSettings } from "@/lib/settings";
 export default async function Home() {
   const settings = await getSiteSettings();
   
-  const features = [
+    const features = [
+    {
+      icon: Sparkles,
+      title: "Assistant IA Intégré",
+      description: "Générez des résumés percutants et décrivez vos expériences avec l'aide de l'intelligence artificielle.",
+      glow: "group-hover:shadow-[0_0_30px_rgba(234,179,8,0.3)]",
+      iconColor: "text-yellow-400",
+    },
     {
       icon: Save,
       title: "Sauvegarde en temps réel",
@@ -34,13 +41,7 @@ export default async function Home() {
       glow: "group-hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]",
       iconColor: "text-violet-400",
     },
-    {
-      icon: ImageIcon,
-      title: "Photo Pro",
-      description: "Ajoutez et recadrez votre photo avec notre intégration Cloudinary ultra-rapide.",
-      glow: "group-hover:shadow-[0_0_30px_rgba(236,72,153,0.3)]",
-      iconColor: "text-pink-400",
-    },
+
     {
       icon: CreditCard,
       title: `Mobile Money (${settings?.payment.paymentAmount} ${settings?.payment.currency})`,
