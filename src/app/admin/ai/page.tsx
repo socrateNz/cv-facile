@@ -13,20 +13,23 @@ export default function AdminAIPage() {
     },
   ]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!prompt.trim() || isLoading) return;
+  const handleSubmit = async (e: React.FormEvent, customPrompt?: string) => {
+    if (e) e.preventDefault();
+    const promptToSend = (customPrompt || prompt).trim();
+    if (!promptToSend || isLoading) return;
 
-    const userMessage = prompt.trim();
-    setMessages((prev) => [...prev, { role: "user", text: userMessage }]);
+    setMessages((prev) => [...prev, { role: "user", text: promptToSend }]);
     setPrompt("");
     setIsLoading(true);
 
     try {
       const res = await fetch("/api/admin/ai/query", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: userMessage }),
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-role": "admin"
+        },
+        body: JSON.stringify({ prompt: promptToSend }),
       });
 
       const data = await res.json();
@@ -40,6 +43,13 @@ export default function AdminAIPage() {
     }
   };
 
+  const suggestions = [
+    { label: "📊 Statistiques Générales", query: "Donne-moi les statistiques générales de la plateforme (utilisateurs, CVs, chiffre d'affaires)." },
+    { label: "📝 Derniers CV Créés", query: "Quels sont les 5 derniers CV créés et leurs modèles ?" },
+    { label: "👤 Nouveaux Utilisateurs", query: "Qui sont les 5 derniers utilisateurs inscrits sur la plateforme ?" },
+    { label: "💳 Transactions Récentes", query: "Donne-moi le résumé des 5 derniers paiements effectués." }
+  ];
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center gap-3 mb-8">
@@ -48,7 +58,7 @@ export default function AdminAIPage() {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white">Centre de Commandement IA</h1>
-          <p className="text-slate-400">Discutez avec l'IA pour générer du contenu marketing, SEO ou administratif.</p>
+          <p className="text-slate-400">Discutez avec l'IA pour obtenir des statistiques en temps réel, gérer la plateforme ou générer du contenu.</p>
         </div>
       </div>
 
@@ -79,13 +89,28 @@ export default function AdminAIPage() {
         </div>
 
         {/* Input area */}
-        <div className="p-4 border-t border-white/10 bg-slate-900/50">
-          <form onSubmit={handleSubmit} className="relative flex items-center">
+        <div className="p-4 border-t border-white/10 bg-slate-900/50 space-y-3">
+          {/* Suggestion Chips */}
+          <div className="flex flex-wrap gap-2">
+            {suggestions.map((s, idx) => (
+              <button
+                key={idx}
+                type="button"
+                disabled={isLoading}
+                onClick={() => handleSubmit(null as any, s.query)}
+                className="text-xs bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-indigo-500/10 text-slate-300 hover:text-white px-3 py-1.5 rounded-full transition-all duration-200 disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-slate-300 cursor-pointer"
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
+          <form onSubmit={(e) => handleSubmit(e)} className="relative flex items-center">
             <input
               type="text"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Demandez à l'IA de rédiger un email, trouver des idées SEO..."
+              placeholder="Posez une question sur les statistiques ou demandez une action..."
               className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-transparent transition-all"
               disabled={isLoading}
             />

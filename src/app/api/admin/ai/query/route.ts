@@ -1,10 +1,20 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { connectToDatabase } from "@/lib/mongodb";
+import { UserModel } from "@/models/User";
+import { CVModel } from "@/models/CV";
+import { PaymentModel } from "@/models/Payment";
+import { assertRole, getSessionUser } from "@/lib/auth";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    const session = getSessionUser(req);
+    if (!session || !assertRole(session.role, "admin")) {
+      return NextResponse.json({ message: "Accès admin requis." }, { status: 403 });
+    }
+
     if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json(
         { error: "La clé API Gemini n'est pas configurée." },
@@ -18,10 +28,49 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Aucun prompt fourni." }, { status: 400 });
     }
 
+    await connectToDatabase();
+
+    // Récupérer les statistiques réelles de l'application
+    const [
+      usersCount,
+      cvsCount,
+      completedPaymentsCount,
+      recentUsers,
+      recentCVs,
+      recentPayments
+    ] = await Promise.all([
+      UserModel.countDocuments(),
+      CVModel.countDocuments(),
+      PaymentModel.countDocuments({ status: "completed" }),
+      UserModel.find().select("fullName email createdAt").sort({ createdAt: -1 }).limit(5).lean(),
+      CVModel.find().select("fullName title template createdAt").sort({ createdAt: -1 }).limit(5).lean(),
+      PaymentModel.find().sort({ createdAt: -1 }).limit(5).populate("userId", "fullName email").lean()
+    ]);
+
+    const revenue = completedPaymentsCount * 500; // Chaque téléchargement payé coûte 500 FCFA
+
     const systemInstruction = `
 Tu es l'Assistant IA exclusif pour l'Administrateur de "CVFacile", une plateforme web de création de CV au Cameroun. 
-Ton rôle est d'aider l'admin à rédiger des emails marketing, des articles SEO, ou à analyser des stratégies.
-Tu dois répondre en français de manière professionnelle, concise et orientée business.
+Voici l'état actuel et réel des données de l'application :
+
+--- STATISTIQUES GLOBALES ---
+- Nombre total d'utilisateurs inscrits : ${usersCount}
+- Nombre total de CV créés : ${cvsCount}
+- Nombre total de paiements complétés (téléchargements payés) : ${completedPaymentsCount}
+- Chiffre d'affaires total : ${revenue} FCFA (chaque téléchargement coûte 500 FCFA)
+
+--- 5 DERNIERS UTILISATEURS INSCRITS ---
+${recentUsers.map((u: any) => `- ${u.fullName || "Sans nom"} (${u.email || "Pas d'email"}), inscrit le ${u.createdAt ? new Date(u.createdAt).toLocaleDateString("fr-FR") : "N/A"}`).join("\n")}
+
+--- 5 DERNIERS CV CRÉÉS ---
+${recentCVs.map((c: any) => `- ${c.fullName || "Sans nom"} : "${c.title || "Sans titre"}" (Modèle: ${c.template || "Standard"}), créé le ${c.createdAt ? new Date(c.createdAt).toLocaleDateString("fr-FR") : "N/A"}`).join("\n")}
+
+--- 5 DERNIERS PAIEMENTS ---
+${recentPayments.map((p: any) => `- Montant: ${p.amount} FCFA, Statut: ${p.status}, Référence: ${p.reference}, par: ${p.userId?.fullName || p.userId?.email || p.guestId || "Invité"}`).join("\n")}
+-----------------------------
+
+Ton rôle est d'aider l'admin à analyser ces données, de répondre à toutes ses questions sur ces statistiques, de l'aider à concevoir des emails marketing pour les utilisateurs, à rédiger des articles SEO, ou à analyser des stratégies de croissance basées sur ces données.
+Réponds en français de manière professionnelle, claire et structurée. N'hésite pas à faire des petits tableaux en Markdown pour présenter les statistiques ou données si l'admin le demande.
 `;
 
     let text = "";
