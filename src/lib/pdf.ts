@@ -1,5 +1,25 @@
-import puppeteer from "puppeteer";
 import type { CVDocument } from "@/types/cv";
+
+async function getBrowserInstance(): Promise<any> {
+  const isProduction = process.env.NODE_ENV === "production" || !!process.env.VERCEL;
+
+  if (isProduction) {
+    const puppeteerCore = await import("puppeteer-core");
+    const chromium = (await import("@sparticuz/chromium")).default as any;
+    return puppeteerCore.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+    });
+  } else {
+    const puppeteer = await import("puppeteer");
+    return puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+  }
+}
 
 function getAppBaseUrl() {
   if (process.env.NEXT_PUBLIC_APP_URL) {
@@ -35,11 +55,8 @@ async function generateCvPdfFromPrintPage(
   cookies: { authToken: string; guestId: string },
   baseUrlFallback?: string
 ) {
+  const browser = await getBrowserInstance();
   const baseUrl = baseUrlFallback || getAppBaseUrl();
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
 
   try {
     const page = await browser.newPage();
@@ -91,7 +108,7 @@ async function generateCvPdfFromPrintPage(
 
 /** Fallback minimal (ancien comportement) */
 async function generateCvPdfFromHtml(cv: CVDocument) {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await getBrowserInstance();
   const page = await browser.newPage();
   await page.setContent(renderCvHtml(cv), { waitUntil: "networkidle0" });
   const pdf = await page.pdf({

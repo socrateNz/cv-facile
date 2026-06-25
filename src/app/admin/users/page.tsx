@@ -141,8 +141,8 @@ export default function AdminUsersPage() {
     });
   };
 
-  const getContactType = (contact: string) => {
-    if (contact.includes("@")) return { type: "email", icon: Mail };
+  const getContactType = (contact?: string) => {
+    if (contact && contact.includes("@")) return { type: "email", icon: Mail };
     return { type: "phone", icon: Phone };
   };
 
@@ -284,7 +284,7 @@ export default function AdminUsersPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-600 flex items-center justify-center text-white font-semibold shadow-md">
-                            {user.fullName ? user.fullName.charAt(0).toUpperCase() : user.emailOrPhone.charAt(0).toUpperCase()}
+                            {user.fullName ? user.fullName.charAt(0).toUpperCase() : (user.emailOrPhone ? user.emailOrPhone.charAt(0).toUpperCase() : "?")}
                           </div>
                           <div>
                             <p className="font-medium text-white">{user.fullName || "Nom non défini"}</p>

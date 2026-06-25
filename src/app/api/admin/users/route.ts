@@ -10,5 +10,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: "Accès admin requis." }, { status: 403 });
   }
   const users = await UserModel.find().select("-passwordHash").sort({ createdAt: -1 }).lean();
-  return NextResponse.json({ data: users });
+  const mappedUsers = users.map((u: any) => ({
+    ...u,
+    emailOrPhone: u.email || u.phone || ""
+  }));
+  return NextResponse.json({ data: mappedUsers });
 }

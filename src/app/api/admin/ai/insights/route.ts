@@ -54,8 +54,8 @@ Ta tâche: Rédige un court paragraphe (3-4 phrases maximum) en français qui r�
       text = response.text();
     } catch (err: any) {
       if (err.status === 503 || err.message?.includes("503")) {
-        console.log("gemini-2.5-flash saturé (503) pour insights, fallback vers gemini-2.0-flash...");
-        const fallbackModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        console.log("gemini-2.5-flash saturé (503) pour insights, fallback vers gemini-1.5-flash...");
+        const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const fallbackResult = await fallbackModel.generateContent({
           contents: [{ role: "user", parts: [{ text: systemInstruction }] }]
         });
